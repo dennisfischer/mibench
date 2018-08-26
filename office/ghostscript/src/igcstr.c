@@ -129,7 +129,7 @@ gc_string_mark(const byte *ptr, uint size, bool set, gc_state_t *gcst)
 	  {
 #ifdef DEBUG
 		if ( gs_debug_c('5') )
-		  {	dprintf2("[5]0x%lx[%u]", (ulong)ptr, size);
+		  {	dprintf_local2("[5]0x%lx[%u]", (ulong)ptr, size);
 			dprintstr();
 			dputs(" not in a chunk\n");
 		  }
@@ -170,7 +170,7 @@ gc_string_mark(const byte *ptr, uint size, bool set, gc_state_t *gcst)
 	marks = gc_mark_string(ptr, size, set, cp);
 #ifdef DEBUG
 	if ( gs_debug_c('5') )
-	  {	dprintf4("[5]%s%smarked 0x%lx[%u]",
+	  {	dprintf_local4("[5]%s%smarked 0x%lx[%u]",
 			 (marks ? "" : "already "), (set ? "" : "un"),
 			 (ulong)ptr, size);
 		dprintstr();
@@ -306,7 +306,7 @@ gc_strings_compact(chunk_t *cp)
 		    for ( ; i < n; i += R )
 		      { uint j;
 
-			dprintf1("[4]0x%lx: ", (ulong)(base + i));
+			dprintf_local1("[4]0x%lx: ", (ulong)(base + i));
 			for ( j = i; j < i + R; j++ )
 			  { byte ch = base[j];
 
@@ -321,7 +321,7 @@ gc_strings_compact(chunk_t *cp)
 				 '+' : '.'));
 #undef R
 			if ( !(i & (string_data_quantum - 1)) )
-			  dprintf1(" %u", cp->sreloc[i >> log2_string_data_quantum]);
+			  dprintf_local1(" %u", cp->sreloc[i >> log2_string_data_quantum]);
 			dputc('\n');
 		      }
 		  }

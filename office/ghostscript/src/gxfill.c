@@ -95,14 +95,14 @@ gs_private_st_simple(st_active_line, active_line, "active_line");
 /* Internal procedures for printing and checking active lines. */
 private void
 print_active_line(const char *label, const active_line *alp)
-{	dprintf5("[f]%s 0x%lx(%d): x_current=%f x_next=%f\n",
+{	dprintf_local5("[f]%s 0x%lx(%d): x_current=%f x_next=%f\n",
 	         label, (ulong)alp, alp->direction,
 	         fixed2float(alp->x_current), fixed2float(alp->x_next));
-	dprintf5("    start=(%f,%f) pt_end=0x%lx(%f,%f)\n",
+	dprintf_local5("    start=(%f,%f) pt_end=0x%lx(%f,%f)\n",
 	         fixed2float(alp->start.x), fixed2float(alp->start.y),
 	         (ulong)alp->pseg,
 	         fixed2float(alp->end.x), fixed2float(alp->end.y));
-	dprintf2("    prev=0x%lx next=0x%lx\n",
+	dprintf_local2("    prev=0x%lx next=0x%lx\n",
 		 (ulong)alp->prev, (ulong)alp->next);
 }
 private void
@@ -110,10 +110,10 @@ print_line_list(const active_line *flp)
 {	const active_line *lp;
 	for ( lp = flp; lp != 0; lp = lp->next )
 	   {	fixed xc = lp->x_current, xn = lp->x_next;
-		dprintf3("[f]0x%lx(%d): x_current/next=%g",
+		dprintf_local3("[f]0x%lx(%d): x_current/next=%g",
 		         (ulong)lp, lp->direction,
 		         fixed2float(xc));
-		if ( xn != xc ) dprintf1("/%g", fixed2float(xn));
+		if ( xn != xc ) dprintf_local1("/%g", fixed2float(xn));
 		dputc('\n');
 	   }
 }
@@ -430,14 +430,14 @@ nope:	if ( lst.close_count != 0 )
 #ifdef DEBUG
 	if ( gs_debug_c('f') )
 	   {	dputs("[f]  # alloc    up  down  horiz step slowx  iter  find  band bstep bfill\n");
-		dprintf5(" %5ld %5ld %5ld %5ld %5ld",
+		dprintf_local5(" %5ld %5ld %5ld %5ld %5ld",
 			 n_fill, n_fill_alloc, n_y_up, n_y_down, n_horiz);
-		dprintf4(" %5ld %5ld %5ld %5ld",
+		dprintf_local4(" %5ld %5ld %5ld %5ld",
 			 n_x_step, n_slow_x, n_iter, n_find_y);
-		dprintf3(" %5ld %5ld %5ld\n",
+		dprintf_local3(" %5ld %5ld %5ld\n",
 			 n_band, n_band_step, n_band_fill);
 		dputs("[f]    afill slant shall sfill\n");
-		dprintf4("       %5ld %5ld %5ld %5ld\n",
+		dprintf_local4("       %5ld %5ld %5ld %5ld\n",
 			 n_afill, n_slant, n_slant_shallow, n_sfill);
 	   }
 #endif
@@ -1111,7 +1111,7 @@ fill_loop_by_trapezoids(ll_ptr ll, gx_device *dev,
 		  if ( alp->end.y < y1 ) y1 = alp->end.y;
 #ifdef DEBUG
 		if ( gs_debug_c('F') )
-		  {	dprintf2("[F]before loop: y=%f y1=%f:\n",
+		  {	dprintf_local2("[F]before loop: y=%f y1=%f:\n",
 				 fixed2float(y), fixed2float(y1));
 			print_line_list(ll->x_list);
 		  }
@@ -1176,7 +1176,7 @@ fill_loop_by_trapezoids(ll_ptr ll, gx_device *dev,
 		  alp->x_next = al_x_at_y(alp, y1);
 #ifdef DEBUG
 		if ( gs_debug_c('F') )
-		  {	dprintf1("[F]after loop: y1=%f\n", fixed2float(y1));
+		  {	dprintf_local1("[F]after loop: y1=%f\n", fixed2float(y1));
 			print_line_list(ll->x_list);
 		  }
 #endif

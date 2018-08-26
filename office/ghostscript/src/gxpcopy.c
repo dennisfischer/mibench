@@ -180,7 +180,7 @@ adjust_point_to_tangent(segment *pseg, const segment *next,
 #ifdef DEBUG
 private void
 dprint_curve(const char *str, fixed x0, fixed y0, const curve_segment *pc)
-{	dprintf9("%s p0=(%g,%g) p1=(%g,%g) p2=(%g,%g) p3=(%g,%g)\n",
+{	dprintf_local9("%s p0=(%g,%g) p1=(%g,%g) p2=(%g,%g) p3=(%g,%g)\n",
 		 str, fixed2float(x0), fixed2float(y0),
 		 fixed2float(pc->p1.x), fixed2float(pc->p1.y),
 		 fixed2float(pc->p2.x), fixed2float(pc->p2.y),
@@ -369,7 +369,7 @@ gx_curve_x_at_y(curve_cursor *prc, fixed y)
 		if ( any_abs(xlf - xl) > fixed_epsilon ||
 		     any_abs(xdf - xd) > fixed_epsilon
 		   )
-		  dprintf9("Curve points differ: k=%d t=%d a,b,c=%g,%g,%g\n   xl,xd fixed=%g,%g floating=%g,%g\n",
+		  dprintf_local9("Curve points differ: k=%d t=%d a,b,c=%g,%g,%g\n   xl,xd fixed=%g,%g floating=%g,%g\n",
 			   k, t,
 			   fixed2float(a), fixed2float(b), fixed2float(c),
 			   fixed2float(xl), fixed2float(xd),
@@ -563,7 +563,7 @@ monotonize_internal(gx_path *ppath, const curve_segment *pc)
 	    if ( nseg == 1 )
 	      dprint_curve("[2]No split", pp0.x, pp0.y, pc);
 	    else
-	      { dprintf1("[2]Split into %d segments:\n", nseg);
+	      { dprintf_local1("[2]Split into %d segments:\n", nseg);
 		dprint_curve("[2]Original", pp0.x, pp0.y, pc);
 		for ( pi = 0; pi < nseg; ++pi )
 		  { dprint_curve("[2] =>", pp0.x, pp0.y, cs + pi);

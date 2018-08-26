@@ -214,10 +214,10 @@ top:	x0 = ppath->position.x;
 	y0 = ppath->position.y;
 #ifdef DEBUG
 	if ( gs_debug_c('3') )
-	  dprintf4("[3]x0=%f y0=%f x1=%f y1=%f\n",
+	  dprintf_local4("[3]x0=%f y0=%f x1=%f y1=%f\n",
 		   fixed2float(x0), fixed2float(y0),
 		   fixed2float(x1), fixed2float(y1)),
-	  dprintf5("   x2=%f y2=%f x3=%f y3=%f  k=%d\n",
+	  dprintf_local5("   x2=%f y2=%f x3=%f y3=%f  k=%d\n",
 		   fixed2float(x2), fixed2float(y2),
 		   fixed2float(x3), fixed2float(y3), k);
 #endif
@@ -332,13 +332,13 @@ top:	x0 = ppath->position.x;
 	{	int code;
 #ifdef DEBUG
 		if ( gs_debug_c('3') )
-		  dprintf4("[3]dx=%f+%d, dy=%f+%d\n",
+		  dprintf_local4("[3]dx=%f+%d, dy=%f+%d\n",
 			   fixed2float(idx), rdx,
 			   fixed2float(idy), rdy),
-		  dprintf4("   d2x=%f+%d, d2y=%f+%d\n",
+		  dprintf_local4("   d2x=%f+%d, d2y=%f+%d\n",
 			   fixed2float(id2x), rd2x,
 			   fixed2float(id2y), rd2y),
-		  dprintf4("   d3x=%f+%d, d3y=%f+%d\n",
+		  dprintf_local4("   d3x=%f+%d, d3y=%f+%d\n",
 			   fixed2float(id3x), rd3x,
 			   fixed2float(id3y), rd3y);
 #endif

@@ -596,7 +596,7 @@ x_fill_rectangle(register gx_device *dev,
     }
 #ifdef DEBUG
     if (gs_debug['F'])
-	dprintf5("[F] fill (%d,%d):(%d,%d) %ld\n",
+	dprintf_local5("[F] fill (%d,%d):(%d,%d) %ld\n",
 		 x, y, w, h, (long)color);
 #endif
     return 0;
@@ -811,7 +811,7 @@ x_copy_color(register gx_device *dev,
 	  x_update_add(dev, x, y, w, h);
 #ifdef DEBUG
 	if (gs_debug['F'])
-	  dprintf4("[F] copy_color (%d,%d):(%d,%d)\n",
+	  dprintf_local4("[F] copy_color (%d,%d):(%d,%d)\n",
 		   x, y, w, h);
 #endif
 	return 0;
@@ -1035,7 +1035,7 @@ x_strip_tile_rectangle(register gx_device *dev, const gx_strip_bitmap *tiles,
     }
 #ifdef DEBUG
     if (gs_debug['F'])
-	dprintf6("[F] tile (%d,%d):(%d,%d) %ld,%ld\n",
+	dprintf_local6("[F] tile (%d,%d):(%d,%d) %ld,%ld\n",
 		 x, y, w, h, (long)zero, (long)one);
 #endif
     return 0;
@@ -1081,10 +1081,10 @@ set_tile(register gx_device *dev, register const gx_strip_bitmap *tile)
     if (gs_debug['H']) {
 	int i;
 
-	dprintf4("[H] 0x%lx: width=%d height=%d raster=%d\n",
+	dprintf_local4("[H] 0x%lx: width=%d height=%d raster=%d\n",
 		 (ulong)tile->data, tile->size.x, tile->size.y, tile->raster);
 	for (i = 0; i < tile->raster * tile->size.y; i++)
-	    dprintf1(" %02x", tile->data[i]);
+	    dprintf_local1(" %02x", tile->data[i]);
 	dputc('\n');
     }
 #endif

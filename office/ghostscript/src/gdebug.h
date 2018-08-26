@@ -61,31 +61,31 @@ extern void lprintf_file_and_line(P3(FILE *, const char *, int));
 /* Debugging printout macros. */
 #ifdef DEBUG
 #  define if_debug0(c,s)\
-    if (gs_debug_c(c)) dprintf(s)
+    if (gs_debug_c(c)) dprintf_local(s)
 #  define if_debug1(c,s,a1)\
-    if (gs_debug_c(c)) dprintf1(s,a1)
+    if (gs_debug_c(c)) dprintf_local1(s,a1)
 #  define if_debug2(c,s,a1,a2)\
-    if (gs_debug_c(c)) dprintf2(s,a1,a2)
+    if (gs_debug_c(c)) dprintf_local2(s,a1,a2)
 #  define if_debug3(c,s,a1,a2,a3)\
-    if (gs_debug_c(c)) dprintf3(s,a1,a2,a3)
+    if (gs_debug_c(c)) dprintf_local3(s,a1,a2,a3)
 #  define if_debug4(c,s,a1,a2,a3,a4)\
-    if (gs_debug_c(c)) dprintf4(s,a1,a2,a3,a4)
+    if (gs_debug_c(c)) dprintf_local4(s,a1,a2,a3,a4)
 #  define if_debug5(c,s,a1,a2,a3,a4,a5)\
-    if (gs_debug_c(c)) dprintf5(s,a1,a2,a3,a4,a5)
+    if (gs_debug_c(c)) dprintf_local5(s,a1,a2,a3,a4,a5)
 #  define if_debug6(c,s,a1,a2,a3,a4,a5,a6)\
-    if (gs_debug_c(c)) dprintf6(s,a1,a2,a3,a4,a5,a6)
+    if (gs_debug_c(c)) dprintf_local6(s,a1,a2,a3,a4,a5,a6)
 #  define if_debug7(c,s,a1,a2,a3,a4,a5,a6,a7)\
-    if (gs_debug_c(c)) dprintf7(s,a1,a2,a3,a4,a5,a6,a7)
+    if (gs_debug_c(c)) dprintf_local7(s,a1,a2,a3,a4,a5,a6,a7)
 #  define if_debug8(c,s,a1,a2,a3,a4,a5,a6,a7,a8)\
-    if (gs_debug_c(c)) dprintf8(s,a1,a2,a3,a4,a5,a6,a7,a8)
+    if (gs_debug_c(c)) dprintf_local8(s,a1,a2,a3,a4,a5,a6,a7,a8)
 #  define if_debug9(c,s,a1,a2,a3,a4,a5,a6,a7,a8,a9)\
-    if (gs_debug_c(c)) dprintf9(s,a1,a2,a3,a4,a5,a6,a7,a8,a9)
+    if (gs_debug_c(c)) dprintf_local9(s,a1,a2,a3,a4,a5,a6,a7,a8,a9)
 #  define if_debug10(c,s,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)\
-    if (gs_debug_c(c)) dprintf10(s,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
+    if (gs_debug_c(c)) dprintf_local10(s,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10)
 #  define if_debug11(c,s,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)\
-    if (gs_debug_c(c)) dprintf11(s,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)
+    if (gs_debug_c(c)) dprintf_local11(s,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11)
 #  define if_debug12(c,s,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12)\
-    if (gs_debug_c(c)) dprintf12(s,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12)
+    if (gs_debug_c(c)) dprintf_local12(s,a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12)
 #else
 #  define if_debug0(c,s) DO_NOTHING
 #  define if_debug1(c,s,a1) DO_NOTHING

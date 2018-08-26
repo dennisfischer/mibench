@@ -537,7 +537,7 @@ top:	if ( count <= end_count )
 	/* Check the invariant between q, qbit, and count. */
 	{	int pcount = (endptr - q) * 8 + qbit;
 		if ( pcount != count )
-			dprintf2("[w2]Error: count=%d pcount=%d\n",
+			dprintf_local2("[w2]Error: count=%d pcount=%d\n",
 				 count, pcount);
 	}
 #endif

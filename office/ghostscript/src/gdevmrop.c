@@ -75,26 +75,26 @@ trace_copy_rop(const char *cname, gx_device *dev,
   const gx_strip_bitmap *textures, const gx_color_index *tcolors,
   int x, int y, int width, int height,
   int phase_x, int phase_y, gs_logical_operation_t lop)
-{	dprintf4("%s: dev=0x%lx(%s) depth=%d\n",
+{	dprintf_local4("%s: dev=0x%lx(%s) depth=%d\n",
 		 cname, (ulong)dev, dev->dname, dev->color_info.depth);
-	dprintf4("  source data=0x%lx x=%d raster=%u id=%lu colors=",
+	dprintf_local4("  source data=0x%lx x=%d raster=%u id=%lu colors=",
 		 (ulong)sdata, sourcex, sraster, (ulong)id);
 	if ( scolors )
-	  dprintf2("(%lu,%lu);\n", scolors[0], scolors[1]);
+	  dprintf_local2("(%lu,%lu);\n", scolors[0], scolors[1]);
 	else
 	  dputs("none;\n");
 	if ( textures )
-	  dprintf8("  textures=0x%lx size=%dx%d(%dx%d) raster=%u shift=%d(%d)",
+	  dprintf_local8("  textures=0x%lx size=%dx%d(%dx%d) raster=%u shift=%d(%d)",
 		   (ulong)textures, textures->size.x, textures->size.y,
 		   textures->rep_width, textures->rep_height, textures->raster,
 		   textures->shift, textures->rep_shift);
 	else
 	  dputs("  textures=none");
 	if ( tcolors )
-	  dprintf2(" colors=(%lu,%lu)\n", tcolors[0], tcolors[1]);
+	  dprintf_local2(" colors=(%lu,%lu)\n", tcolors[0], tcolors[1]);
 	else
 	  dputs(" colors=none\n");
-	dprintf7("  rect=(%d,%d),(%d,%d) phase=(%d,%d) op=0x%x\n",
+	dprintf_local7("  rect=(%d,%d),(%d,%d) phase=(%d,%d) op=0x%x\n",
 		 x, y, x + width, y + height, phase_x, phase_y,
 		 (uint)lop);
 	if ( gs_debug_c('B') )

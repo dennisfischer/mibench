@@ -263,14 +263,14 @@ gx_stroke_path_only(gx_path *ppath, gx_path *to_path, gx_device *pdev,
 if ( gs_debug_c('o') )
    {	int count = pgs_lp->dash.pattern_size;
 	int i;
-	dprintf3("[o]half_width=%f, cap=%d, join=%d,\n",
+	dprintf_local3("[o]half_width=%f, cap=%d, join=%d,\n",
 		 pgs_lp->half_width, (int)pgs_lp->cap, (int)pgs_lp->join);
-	dprintf2("   miter_limit=%f, miter_check=%f,\n",
+	dprintf_local2("   miter_limit=%f, miter_check=%f,\n",
 		 pgs_lp->miter_limit, pgs_lp->miter_check);
-	dprintf1("   dash pattern=%d", count);
+	dprintf_local1("   dash pattern=%d", count);
 	for ( i = 0; i < count; i++ )
-	  dprintf1(",%f", pgs_lp->dash.pattern[i]);
-	dprintf4(",\n	offset=%f, init(ink_on=%d, index=%d, dist_left=%f)\n",
+	  dprintf_local1(",%f", pgs_lp->dash.pattern[i]);
+	dprintf_local4(",\n	offset=%f, init(ink_on=%d, index=%d, dist_left=%f)\n",
 		 pgs_lp->dash.offset, pgs_lp->dash.init_ink_on,
 		 pgs_lp->dash.init_index, pgs_lp->dash.init_dist_left);
    }
@@ -762,13 +762,13 @@ line_intersect(
 	double max_result = any_abs(denom) * (double)max_fixed;
 #ifdef DEBUG
 if ( gs_debug_c('O') )
-   {	dprintf4("[o]Intersect %f,%f(%f/%f)",
+   {	dprintf_local4("[o]Intersect %f,%f(%f/%f)",
 		 fixed2float(pp1->x), fixed2float(pp1->y),
 		 fixed2float(pd1->x), fixed2float(pd1->y));
-	dprintf4(" & %f,%f(%f/%f),\n",
+	dprintf_local4(" & %f,%f(%f/%f),\n",
 		 fixed2float(pp2->x), fixed2float(pp2->y),
 		 fixed2float(pd2->x), fixed2float(pd2->y));
-	dprintf3("\txdiff=%f ydiff=%f denom=%f ->\n",
+	dprintf_local3("\txdiff=%f ydiff=%f denom=%f ->\n",
 		 xdiff, ydiff, denom);
    }
 #endif
@@ -1111,9 +1111,9 @@ line_join_points(const gx_line_params *pgs_lp, pl_ptr plp, pl_ptr nplp,
 			num = -num;
 #ifdef DEBUG
 if ( gs_debug_c('O') )
-                   {	dprintf4("[o]Miter check: u1/v1=%f/%f, u2/v2=%f/%f,\n",
+                   {	dprintf_local4("[o]Miter check: u1/v1=%f/%f, u2/v2=%f/%f,\n",
 				 u1, v1, u2, v2);
-			dprintf3("        num=%f, denom=%f, check=%f\n",
+			dprintf_local3("        num=%f, denom=%f, check=%f\n",
 				 num, denom, check);
                    }
 #endif
@@ -1168,10 +1168,10 @@ compute_caps(register pl_ptr plp)
 	plp->e.ce.x = plp->e.p.x + wx2, plp->e.ce.y = plp->e.p.y + wy2;
 #ifdef DEBUG
 if ( gs_debug_c('O') )
-	dprintf4("[o]Stroke o=(%f,%f) e=(%f,%f)\n",
+	dprintf_local4("[o]Stroke o=(%f,%f) e=(%f,%f)\n",
 		 fixed2float(plp->o.p.x), fixed2float(plp->o.p.y),
 		 fixed2float(plp->e.p.x), fixed2float(plp->e.p.y)),
-	dprintf4("\twxy=(%f,%f) lxy=(%f,%f)\n",
+	dprintf_local4("\twxy=(%f,%f) lxy=(%f,%f)\n",
 		 fixed2float(wx2), fixed2float(wy2),
 		 fixed2float(plp->e.cdelta.x), fixed2float(plp->e.cdelta.y));
 #endif

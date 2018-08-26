@@ -446,7 +446,7 @@ if ( gs_debug_c('H') )
 		const byte *ptr = p + wb * pbt->tiles.size.y;
 
 		while ( p < ptr )
-		{	dprintf8(" %d%d%d%d%d%d%d%d",
+		{	dprintf_local8(" %d%d%d%d%d%d%d%d",
 				 *p >> 7, (*p >> 6) & 1, (*p >> 5) & 1,
 				 (*p >> 4) & 1, (*p >> 3) & 1, (*p >> 2) & 1,
 				 (*p >> 1) & 1, *p & 1);

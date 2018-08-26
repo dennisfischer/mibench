@@ -54,9 +54,9 @@ int
 gs_log_error(int err, const char _ds *file, int line)
 {	if ( gs_log_errors )
 	  { if ( file == NULL )
-	      dprintf1("Returning error %d.\n", err);
+	      dprintf_local1("Returning error %d.\n", err);
 	    else
-	      dprintf3("%s(%d): Returning error %d.\n",
+	      dprintf_local3("%s(%d): Returning error %d.\n",
 		       (const char *)file, line, err);
 	  }
 	return err;
@@ -183,11 +183,11 @@ void
 debug_dump_bytes(const byte *from, const byte *to, const char *msg)
 {	const byte *p = from;
 	if ( from < to && msg )
-		dprintf1("%s:\n", msg);
+		dprintf_local1("%s:\n", msg);
 	while ( p != to )
 	   {	const byte *q = min(p + 16, to);
-		dprintf1("0x%lx:", (ulong)p);
-		while ( p != q ) dprintf1(" %02x", *p++);
+		dprintf_local1("0x%lx:", (ulong)p);
+		while ( p != q ) dprintf_local1(" %02x", *p++);
 		dputc('\n');
 	   }
 }

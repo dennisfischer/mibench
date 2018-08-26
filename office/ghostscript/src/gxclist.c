@@ -111,9 +111,9 @@ cmd_count_op(int op, uint size)
 	if ( gs_debug_c('L') )
 	  { const char **sub = cmd_sub_op_names[op >> 4];
 	    if ( sub )
-	      dprintf2(", %s(%u)\n", sub[op & 0xf], size);
+	      dprintf_local2(", %s(%u)\n", sub[op & 0xf], size);
 	    else
-	      dprintf3(", %s %d(%u)\n", cmd_op_names[op >> 4], op & 0xf, size);
+	      dprintf_local3(", %s %d(%u)\n", cmd_op_names[op >> 4], op & 0xf, size);
 	    fflush(dstderr);
 	  }
 	return op;
@@ -226,7 +226,7 @@ clist_init_bands(gx_device *dev, uint data_size, int band_width,
 	cdev->nbands = nbands;
 #ifdef DEBUG
 	if ( gs_debug_c('l') | gs_debug_c(':') )
-	  dprintf4("[l]width=%d, band_width=%d, band_height=%d, nbands=%d\n",
+	  dprintf_local4("[l]width=%d, band_width=%d, band_height=%d, nbands=%d\n",
 		   target->width, band_width, band_height, nbands);
 #endif
 	return 0;
@@ -436,19 +436,19 @@ clist_close(gx_device *dev)
 void
 cmd_print_stats(void)
 {	int ci, cj;
-	dprintf3("[l]counts: reset = %lu, found = %lu, added = %lu\n",
+	dprintf_local3("[l]counts: reset = %lu, found = %lu, added = %lu\n",
 	         cmd_tile_reset, cmd_tile_found, cmd_tile_added);
-	dprintf5("     diff 2.5 = %lu, 3 = %lu, 4 = %lu, 2 = %lu, >4 = %lu\n",
+	dprintf_local5("     diff 2.5 = %lu, 3 = %lu, 4 = %lu, 2 = %lu, >4 = %lu\n",
 		 cmd_diffs[0], cmd_diffs[1], cmd_diffs[2], cmd_diffs[3],
 		 cmd_diffs[4]);
-	dprintf2("     same_band = %lu, other_band = %lu\n",
+	dprintf_local2("     same_band = %lu, other_band = %lu\n",
 		 cmd_same_band, cmd_other_band);
 	for ( ci = 0; ci < 0x100; ci += 0x10 )
 	   {	const char **sub = cmd_sub_op_names[ci >> 4];
 		if ( sub != 0 )
-		  { dprintf1("[l]  %s =", cmd_op_names[ci >> 4]);
+		  { dprintf_local1("[l]  %s =", cmd_op_names[ci >> 4]);
 		    for ( cj = ci; cj < ci + 0x10; cj += 2 )
-		      dprintf6("\n\t%s = %lu(%lu), %s = %lu(%lu)",
+		      dprintf_local6("\n\t%s = %lu(%lu), %s = %lu(%lu)",
 			       sub[cj-ci],
 			       cmd_op_counts[cj], cmd_op_sizes[cj],
 			       sub[cj-ci+1],
@@ -459,13 +459,13 @@ cmd_print_stats(void)
 		    for ( cj = ci; cj < ci + 0x10; cj++ )
 		      tcounts += cmd_op_counts[cj],
 		      tsizes += cmd_op_sizes[cj];
-		    dprintf3("[l]  %s (%lu,%lu) =\n\t",
+		    dprintf_local3("[l]  %s (%lu,%lu) =\n\t",
 			     cmd_op_names[ci >> 4], tcounts, tsizes);
 		    for ( cj = ci; cj < ci + 0x10; cj++ )
 		      if ( cmd_op_counts[cj] == 0 )
 			dputs(" -");
 		      else
-			dprintf2(" %lu(%lu)", cmd_op_counts[cj],
+			dprintf_local2(" %lu(%lu)", cmd_op_counts[cj],
 				 cmd_op_sizes[cj]);
 		  }
 		dputs("\n");
@@ -562,7 +562,7 @@ clist_end_page(gx_device_clist_writer *cldev)
 	cldev->page_bfile_end_pos = clist_ftell(cldev->page_bfile);
 #ifdef DEBUG
 	if ( gs_debug_c('l') | gs_debug_c(':') )
-	  dprintf2("[l]clist_render_init at cfile=%ld, bfile=%ld\n",
+	  dprintf_local2("[l]clist_render_init at cfile=%ld, bfile=%ld\n",
 		   cb.pos, cldev->page_bfile_end_pos);
 #endif
 	return 0;

@@ -147,9 +147,9 @@ pushed:	       if_debug3('1', "[1]%d: (%d) %f\n",
 	     { static const char *c1names[] =
 	        { char1_command_names };
 	       if ( c1names[c] == 0 )
-		 dprintf2("[1]0x%lx: %02x??\n", (ulong)(cip - 1), c);
+		 dprintf_local2("[1]0x%lx: %02x??\n", (ulong)(cip - 1), c);
 	       else
-		 dprintf3("[1]0x%lx: %02x %s\n", (ulong)(cip - 1), c,
+		 dprintf_local3("[1]0x%lx: %02x %s\n", (ulong)(cip - 1), c,
 			  c1names[c]);
 	     }
 #endif
@@ -322,9 +322,9 @@ rsbw:		/* Give the caller the opportunity to intervene. */
 		  { static const char *ce1names[] =
 		     { char1_extended_command_names };
 		    if ( ce1names[c] == 0 )
-		      dprintf2("[1]0x%lx: %02x??\n", (ulong)(cip - 1), c);
+		      dprintf_local2("[1]0x%lx: %02x??\n", (ulong)(cip - 1), c);
 		    else
-		      dprintf3("[1]0x%lx: %02x %s\n", (ulong)(cip - 1), c,
+		      dprintf_local3("[1]0x%lx: %02x %s\n", (ulong)(cip - 1), c,
 			       ce1names[c]);
 		  }
 #endif

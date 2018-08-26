@@ -717,7 +717,7 @@ if ( gs_debug['I'] ||
 	  dputc('*');		/* indent */
 	for ( ; edepth > 0; --edepth )
 	  dputc('.');
-	dprintf3("0x%lx(%d)<%d>: ",
+	dprintf_local3("0x%lx(%d)<%d>: ",
 		 (ulong)iref, icount, ref_stack_count(&o_stack));
 	debug_print_ref(iref);
 	if ( iosp >= osbot )

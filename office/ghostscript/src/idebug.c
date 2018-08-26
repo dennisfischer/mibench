@@ -54,71 +54,71 @@ private void
 debug_print_full_ref(const ref *pref)
 {	unsigned size = r_size(pref);
 	ref nref;
-	dprintf1("(%x)", r_type_attrs(pref));
+	dprintf_local1("(%x)", r_type_attrs(pref));
 	switch ( r_type(pref) )
 	   {
 	case t_array:
-	  dprintf2("array(%u)0x%lx", size, (ulong)pref->value.refs); break;
+	  dprintf_local2("array(%u)0x%lx", size, (ulong)pref->value.refs); break;
 	case t_astruct:
 	  goto strct;
 	case t_boolean:
-	  dprintf1("boolean %x", pref->value.boolval); break;
+	  dprintf_local1("boolean %x", pref->value.boolval); break;
 	case t_device:
-	  dprintf1("device 0x%lx", (ulong)pref->value.pdevice); break;
+	  dprintf_local1("device 0x%lx", (ulong)pref->value.pdevice); break;
 	case t_dictionary:
-	  dprintf3("dict(%u/%u)0x%lx",
+	  dprintf_local3("dict(%u/%u)0x%lx",
 		   dict_length(pref), dict_maxlength(pref),
 		   (ulong)pref->value.pdict);
 	  break;
 	case t_file:
-	  dprintf1("file 0x%lx", (ulong)pref->value.pfile); break;
+	  dprintf_local1("file 0x%lx", (ulong)pref->value.pfile); break;
 	case t_fontID:
 	  goto strct;
 	case t_integer:
-	  dprintf1("int %ld", pref->value.intval); break;
+	  dprintf_local1("int %ld", pref->value.intval); break;
 	case t_mark:
-	  dprintf("mark"); break;
+	  dprintf_local("mark"); break;
 	case t_mixedarray:
-	  dprintf2("mixed packedarray(%u)0x%lx", size,
+	  dprintf_local2("mixed packedarray(%u)0x%lx", size,
 		   (ulong)pref->value.packed); break;
 	case t_name:
-	  dprintf2("name(0x%lx#%u)", (ulong)pref->value.pname,
+	  dprintf_local2("name(0x%lx#%u)", (ulong)pref->value.pname,
 		   name_index(pref));
 	  debug_print_name(pref);
 	  break;
 	case t_null:
-	  dprintf("null"); break;
+	  dprintf_local("null"); break;
 	case t_oparray:
-	  dprintf2("op_array(%u)0x%lx:", size, (ulong)pref->value.const_refs);
+	  dprintf_local2("op_array(%u)0x%lx:", size, (ulong)pref->value.const_refs);
 	  { const op_array_table *opt = op_index_op_array_table(size);
 	    name_index_ref(opt->nx_table[size - opt->base_index], &nref);
 	  }
 	  debug_print_name(&nref);
 	  break;
 	case t_operator:
-	  dprintf1("op(%u", size);
+	  dprintf_local1("op(%u", size);
 	  if ( size > 0 && size < op_def_count ) /* just in case */
-	    dprintf1(":%s", (const char *)(op_def_table[size]->oname + 1));
-	  dprintf1(")0x%lx", (ulong)pref->value.opproc);
+	    dprintf_local1(":%s", (const char *)(op_def_table[size]->oname + 1));
+	  dprintf_local1(")0x%lx", (ulong)pref->value.opproc);
 	  break;
 	case t_real:
-	  dprintf1("real %f", pref->value.realval); break;
+	  dprintf_local1("real %f", pref->value.realval); break;
 	case t_save:
-	  dprintf1("save %lu", pref->value.saveid); break;
+	  dprintf_local1("save %lu", pref->value.saveid); break;
 	case t_shortarray:
-	  dprintf2("short packedarray(%u)0x%lx", size,
+	  dprintf_local2("short packedarray(%u)0x%lx", size,
 		   (ulong)pref->value.packed); break;
 	case t_string:
-	  dprintf2("string(%u)0x%lx", size, (ulong)pref->value.bytes); break;
+	  dprintf_local2("string(%u)0x%lx", size, (ulong)pref->value.bytes); break;
 	case t_struct:
 strct:	  { obj_header_t *obj = (obj_header_t *)pref->value.pstruct;
-	    dprintf2("struct %s 0x%lx",
+	    dprintf_local2("struct %s 0x%lx",
 		     (r_is_foreign(pref) ? "-foreign-" :
 		      gs_struct_type_name_string(gs_object_type(imemory, obj))),
 		     (ulong)obj);
 	  }
 	  break;
-	default: dprintf1("type 0x%x", r_type(pref));
+	default: dprintf_local1("type 0x%x", r_type(pref));
 	   }
 }
 private void
@@ -128,23 +128,23 @@ debug_print_packed_ref(const ref_packed *pref)
 	switch ( *pref >> r_packed_type_shift )
 	{
 	case pt_executable_operator:
-	  dprintf("<op_name>");
+	  dprintf_local("<op_name>");
 	  op_index_ref(elt, &nref);
 	  debug_print_ref(&nref);
 	  break;
 	case pt_integer:
-	  dprintf1("<int> %d", (int)elt + packed_min_intval);
+	  dprintf_local1("<int> %d", (int)elt + packed_min_intval);
 	  break;
 	case pt_literal_name:
-	  dprintf("<lit_name>"); goto ptn;
+	  dprintf_local("<lit_name>"); goto ptn;
 	case pt_executable_name:
-	  dprintf("<exec_name>");
+	  dprintf_local("<exec_name>");
 ptn:	  name_index_ref(elt, &nref);
-	  dprintf2("(0x%lx#%u)", (ulong)nref.value.pname, elt);
+	  dprintf_local2("(0x%lx#%u)", (ulong)nref.value.pname, elt);
 	  debug_print_name(&nref);
 	  break;
 	default:
-	  dprintf2("<packed_%d?>0x%x", *pref >> r_packed_type_shift, elt);
+	  dprintf_local2("<packed_%d?>0x%x", *pref >> r_packed_type_shift, elt);
 	}
 }
 void
@@ -168,19 +168,19 @@ debug_dump_one_ref(const ref *p)
 	uint plen;
 
 	if ( type >= tx_next_index )
-	  dprintf1("0x%02x?? ", type);
+	  dprintf_local1("0x%02x?? ", type);
 	else if ( type >= t_next_index )
-	  dprintf("opr* ");
+	  dprintf_local("opr* ");
 	else
-	  dprintf1("%s ", type_strings[type]);
+	  dprintf_local1("%s ", type_strings[type]);
 	for ( ; ap->mask; ++ap )
 	  if ( (attrs & ap->mask) == ap->value )
 	    dputc(ap->print);
-	dprintf2(" 0x%04x 0x%08lx", r_size(p), *(const ulong *)&p->value);
+	dprintf_local2(" 0x%04x 0x%08lx", r_size(p), *(const ulong *)&p->value);
 	if ( obj_cvs(p, (byte *)buf, countof(buf) - 1, &plen, NULL) >= 0 &&
 	     ((buf[plen] = 0), strcmp(buf, "--nostringval--"))
 	   )
-	  dprintf1(" = %s", buf);
+	  dprintf_local1(" = %s", buf);
 	fflush(dstderr);
 }
 
@@ -190,11 +190,11 @@ debug_dump_refs(const ref *from, uint size, const char *msg)
 {	const ref *p = from;
 	uint count = size;
 	if ( size && msg )
-		dprintf2("%s at 0x%lx:\n", msg, (ulong)from);
+		dprintf_local2("%s at 0x%lx:\n", msg, (ulong)from);
 	while ( count-- )
 	  {	/* The double cast in the next line is to pacify some */
 		/* unreasonably picky compilers. */
-		dprintf2("..%04x: 0x%04x ", (uint)(ulong)p & 0xffff,
+		dprintf_local2("..%04x: 0x%04x ", (uint)(ulong)p & 0xffff,
 			 r_type_attrs(p));
 		debug_dump_one_ref(p);
 		dputc('\n');
@@ -210,9 +210,9 @@ debug_dump_stack(const ref_stack *pstack, const char *msg)
 	for ( i = ref_stack_count(pstack); i != 0; )
 	  { const ref *p = ref_stack_index(pstack, --i);
 	    if ( m )
-	      dprintf2("%s at 0x%lx:\n", m, (ulong)pstack),
+	      dprintf_local2("%s at 0x%lx:\n", m, (ulong)pstack),
 	      m = NULL;
-	    dprintf2("0x%lx: 0x%02x ", (ulong)p, r_type(p));
+	    dprintf_local2("0x%lx: 0x%02x ", (ulong)p, r_type(p));
 	    debug_dump_one_ref(p);
 	    dputc('\n');
 	  }
@@ -228,7 +228,7 @@ debug_dump_array(const ref *array)
 	switch (type)
 	   {
 	default:
-		dprintf2 ("%s at 0x%lx isn't an array.\n",
+		dprintf_local2 ("%s at 0x%lx isn't an array.\n",
 			  (type < countof(type_strings) ?
 			   type_strings[type] : "????"),
 			  (ulong)array);
@@ -252,7 +252,7 @@ debug_dump_array(const ref *array)
 		packed_get(pp, &temp);
 		/* The double cast in the next line is to pacify some */
 		/* unreasonably picky compilers. */
-		dprintf3("..%04x%c 0x%02x ", 
+		dprintf_local3("..%04x%c 0x%02x ", 
 			 (uint)(ulong)pp & 0xffff,
 			 ((r_is_packed(pp)) ? '*' : ':'),
 			 r_type(&temp));

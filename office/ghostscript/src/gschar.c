@@ -89,7 +89,7 @@ private int stringwidth_setup(P3(gs_show_enum *, gs_state *, const char *));
 
 /* Print the ctm if debugging */
 #define print_ctm(s,pgs)\
-  dprintf7("[p]%sctm=[%g %g %g %g %g %g]\n", s,\
+  dprintf_local7("[p]%sctm=[%g %g %g %g %g %g]\n", s,\
 	   pgs->ctm.xx, pgs->ctm.xy, pgs->ctm.yx, pgs->ctm.yy,\
 	   pgs->ctm.tx, pgs->ctm.ty)
 
@@ -525,7 +525,7 @@ set_cache_device(register gs_show_enum *penum, gs_state *pgs, const float *pb)
 		log2_scale.y = penum->log2_suggested_scale.y;
 #ifdef DEBUG
 if ( gs_debug_c('k') )
-   {	dprintf6("[k]cbox=[%g %g %g %g] scale=%dx%d\n",
+   {	dprintf_local6("[k]cbox=[%g %g %g %g] scale=%dx%d\n",
 		 fixed2float(cll.x), fixed2float(cll.y),
 		 fixed2float(cur.x), fixed2float(cur.y),
 		 1 << log2_scale.x, 1 << log2_scale.y);

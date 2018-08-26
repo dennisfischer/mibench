@@ -91,12 +91,12 @@ private void name_scan_sub(P3(name_table *, uint, bool));
 private void
 name_print(const char *msg, name *pname, uint nidx, const int *pflag)
 {	const byte *ptr = pname->string_bytes;
-	dprintf1("[n]%s", msg);
+	dprintf_local1("[n]%s", msg);
 	if ( pflag )
-	  dprintf1("(%d)", *pflag);
-	dprintf2(" (0x%lx#%u)", (ulong)pname, nidx);
+	  dprintf_local1("(%d)", *pflag);
+	dprintf_local2(" (0x%lx#%u)", (ulong)pname, nidx);
 	debug_print_string(ptr, pname->string_size);
-	dprintf2("(0x%lx,%u)\n", (ulong)ptr, pname->string_size);
+	dprintf_local2("(0x%lx,%u)\n", (ulong)ptr, pname->string_size);
 }
 #  define if_debug_name(msg, pname, nidx, pflag)\
      if ( gs_debug_c('n') ) name_print(msg, pname, nidx, pflag)
@@ -495,7 +495,7 @@ name_alloc_sub(name_table *nt)
 		int i0;
 		for ( i0 = 0; i0 < nt_hash_size; i0 += 16 )
 		  {	int i;
-			dprintf1("[n]chain %d:", i0);
+			dprintf_local1("[n]chain %d:", i0);
 			for ( i = i0; i < i0 + 16; i++ )
 			  {	int n = 0;
 				uint nidx;
@@ -503,7 +503,7 @@ name_alloc_sub(name_table *nt)
 				      nidx = name_next_index(nidx, name_index_ptr_inline(nt, nidx))
 				    )
 				  n++;
-				dprintf1(" %d", n);
+				dprintf_local1(" %d", n);
 			  }
 			dputc('\n');
 		  }

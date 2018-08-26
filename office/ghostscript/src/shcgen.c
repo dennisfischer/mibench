@@ -50,9 +50,9 @@ private void
 print_nodes_proc(const count_node *nodes, int n, const char *tag, int lengths)
 {	int i;
 
-	dprintf1("[w]---------------- %s ----------------\n", tag);
+	dprintf_local1("[w]---------------- %s ----------------\n", tag);
 	for ( i = 0; i < n; ++i )
-	  dprintf7("[w]node %d: f=%ld v=%d len=%d N=%d L=%d R=%d\n",
+	  dprintf_local7("[w]node %d: f=%ld v=%d len=%d N=%d L=%d R=%d\n",
 		   i, nodes[i].freq, nodes[i].value, nodes[i].code_length,
 		   (nodes[i].next == 0 ? -1 : (int)(nodes[i].next - nodes)),
 		   (nodes[i].left == 0 ? -1 : (int)(nodes[i].left - nodes)),
@@ -63,7 +63,7 @@ print_nodes_proc(const count_node *nodes, int n, const char *tag, int lengths)
 
 		while ( j > 0 && nodes[j-1].code_length == len )
 		  --j;
-		dprintf2("[w]%d codes of length %d\n", i - j, len);
+		dprintf_local2("[w]%d codes of length %d\n", i - j, len);
 		i = j;
 	  }
 }

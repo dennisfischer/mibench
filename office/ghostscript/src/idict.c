@@ -142,7 +142,7 @@ dict_find(const ref *pdref, const ref *pkey, ref **ppvalue)
 	}
 	/* Do the cheap flag test before the expensive remainder test. */
 	if ( gs_debug_c('d') && !(dn_lookups % 1000) )
-	  dprintf3("[d]lookups=%ld 1probe=%ld 2probe=%ld\n",
+	  dprintf_local3("[d]lookups=%ld 1probe=%ld 2probe=%ld\n",
 		   dn_lookups, dn_1probe, dn_2probe);
 	return code;
 }
@@ -168,7 +168,7 @@ dict_find_name_by_index(uint nidx)
 	}
 	/* Do the cheap flag test before the expensive remainder test. */
 	if ( gs_debug_c('d') && !(dn_lookups % 1000) )
-	  dprintf3("[d]lookups=%ld 1probe=%ld 2probe=%ld\n",
+	  dprintf_local3("[d]lookups=%ld 1probe=%ld 2probe=%ld\n",
 		   dn_lookups, dn_1probe, dn_2probe);
 	return pvalue;
 }
@@ -522,7 +522,7 @@ dict_find_name_by_index(uint nidx)
 			name_index_ref(nidx, &dnref);
 			dputs("[D]lookup ");
 			debug_print_name(&dnref);
-			dprintf3(" in 0x%lx(%u/%u)\n",
+			dprintf_local3(" in 0x%lx(%u/%u)\n",
 				 (ulong)pdict, dict_length(pdref),
 				 dict_maxlength(pdref));
 		}

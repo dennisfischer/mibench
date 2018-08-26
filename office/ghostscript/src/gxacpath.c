@@ -194,7 +194,7 @@ accum_close(gx_device *dev)
 if ( gs_debug_c('q') )
    {	gx_clip_rect *rp =
 	  (adev->list.count <= 1 ? &adev->list.single : adev->list.head);
-	dprintf4("[q]list at 0x%lx, count=%d, head=0x%lx, tail=0x%lx:\n",
+	dprintf_local4("[q]list at 0x%lx, count=%d, head=0x%lx, tail=0x%lx:\n",
 		 (ulong)&adev->list, adev->list.count,
 		 (ulong)adev->list.head, (ulong)adev->list.tail);
 	while ( rp != 0 )

@@ -242,8 +242,8 @@ bbox_output_page(gx_device *dev, int num_copies, int flush)
 
 	/* Print the page bounding box. */
 	gx_device_bbox_bbox((gx_device_bbox *)dev, &bbox);
-	dprintf2("[gdevbbox] lower left  = %f %f\n", bbox.p.x, bbox.p.y);
-	dprintf2("[gdevbbox] upper right = %f %f\n", bbox.q.x, bbox.q.y);
+	dprintf_local2("[gdevbbox] lower left  = %f %f\n", bbox.p.x, bbox.p.y);
+	dprintf_local2("[gdevbbox] upper right = %f %f\n", bbox.q.x, bbox.q.y);
 	return gx_forward_output_page(dev, num_copies, flush);
 }
 #endif

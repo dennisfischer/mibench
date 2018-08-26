@@ -315,15 +315,15 @@ ns:	if_debug9('w', "[w]CFE exit %d: count = %d, run_color = %d,\n     pr = 0x%lx
 		for ( ti = 0; ti < 2; ti++ )
 		  {	int i;
 			ulong total;
-			dprintf1("[w]runs[%d]", ti);
+			dprintf_local1("[w]runs[%d]", ti);
 			for ( i = 0, total = 0; i < 41; i++ )
-			  dprintf1(" %lu", runs_1d[ti].make_up[i]),
+			  dprintf_local1(" %lu", runs_1d[ti].make_up[i]),
 			  total += runs_1d[ti].make_up[i];
-			dprintf1(" total=%lu\n\t", total);
+			dprintf_local1(" total=%lu\n\t", total);
 			for ( i = 0, total = 0; i < 64; i++ )
-			  dprintf1(" %lu", runs_1d[ti].termination[i]),
+			  dprintf_local1(" %lu", runs_1d[ti].termination[i]),
 			  total += runs_1d[ti].termination[i];
-			dprintf1(" total=%lu\n", total);
+			dprintf_local1(" total=%lu\n", total);
 		  }
 	  }
 #endif

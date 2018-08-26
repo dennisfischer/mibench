@@ -555,7 +555,7 @@ gs_exit(int exit_status)
 void
 gs_debug_dump_stack(int code, ref *perror_object)
 {	zflush(osp);	/* force out buffered output */
-	dprintf1("\nUnexpected interpreter error %d.\n", code);
+	dprintf_local1("\nUnexpected interpreter error %d.\n", code);
 	if ( perror_object != 0 )
 	{	dputs("Error object: ");
 		debug_print_ref(perror_object);

@@ -717,10 +717,10 @@ cmd_put_segment(cmd_segment_writer _ss *psw, byte op,
 #ifdef DEBUG
 	if ( gs_debug_c('L') )
 	  { int j;
-	    dprintf2("[L]  %s:%d:", cmd_segment_op_names[op & 0xf],
+	    dprintf_local2("[L]  %s:%d:", cmd_segment_op_names[op & 0xf],
 		     (int)notes);
 	    for ( j = 0; j < i; ++j )
-	      dprintf1(" %g", fixed2float(operands[j]));
+	      dprintf_local1(" %g", fixed2float(operands[j]));
 	    dputs("\n");
 	  }
 #endif

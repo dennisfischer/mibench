@@ -109,7 +109,7 @@ const gs_ptr_procs_t ptr_ref_procs =
 private void
 end_phase(const char _ds *str)
 {	if ( gs_debug_c('6') )
-	  {	dprintf1("[6]---------------- end %s ----------------\n",
+	  {	dprintf_local1("[6]---------------- end %s ----------------\n",
 			 (const char *)str);
 		fflush(dstderr);
 	  }

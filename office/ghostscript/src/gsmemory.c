@@ -193,7 +193,7 @@ gs_heap_alloc_bytes(gs_memory_t *mem, uint size, client_name_t cname)
 	  }
 #ifdef DEBUG
 	if ( gs_debug_c('a') || msg != ok_msg )
-	  dprintf4("[a+]gs_malloc(%s)(%u) = 0x%lx: %s\n",
+	  dprintf_local4("[a+]gs_malloc(%s)(%u) = 0x%lx: %s\n",
 		   client_name_string(cname), size, (ulong)ptr, msg);
 #endif
 	return ptr;
@@ -264,7 +264,7 @@ private void
 gs_heap_free_object(gs_memory_t *mem, void *ptr, client_name_t cname)
 {	malloc_block *bp = malloc_list;
 	if ( gs_debug_c('a') )
-	  dprintf3("[a-]gs_free(%s) 0x%lx(%u)\n",
+	  dprintf_local3("[a-]gs_free(%s) 0x%lx(%u)\n",
 		   client_name_string(cname), (ulong)ptr,
 		   (ptr == 0 ? 0 : ((malloc_block *)ptr)[-1].size));
 	if ( ptr == 0 )
@@ -343,7 +343,7 @@ gs_malloc_release(void)
 	for ( ; bp != 0; bp = np )
 	   {	np = bp->next;
 		if ( gs_debug_c('a') )
-		  dprintf3("[a]gs_malloc_release(%s) 0x%lx(%u)\n",
+		  dprintf_local3("[a]gs_malloc_release(%s) 0x%lx(%u)\n",
 			   client_name_string(bp->cname), (ulong)(bp + 1),
 			   bp->size);
 		gs_alloc_fill(bp + 1, gs_alloc_fill_free, bp->size);

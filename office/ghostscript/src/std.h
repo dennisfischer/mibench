@@ -109,7 +109,7 @@ typedef ulong bits32;
 
 /*
  * Standard error printing macros.
- * Use dprintf for messages that just go to dstderr,
+ * Use dprintf_local for messages that just go to dstderr,
  * eprintf for error messages to estderr that include the program name,
  * lprintf for debugging messages that should include line number info.
  * Since we intercept fprintf to redirect output under MS Windows,
@@ -123,33 +123,33 @@ typedef ulong bits32;
 #define dstderr stderr
 #define estderr stderr
 
-#define dputc(chr) dprintf1("%c", chr)
-#define dputs(str) dprintf1("%s", str)
-#define dprintf(str)\
+#define dputc(chr) dprintf_local1("%c", chr)
+#define dputs(str) dprintf_local1("%s", str)
+#define dprintf_local(str)\
   fprintf(dstderr, str)
-#define dprintf1(str,arg1)\
+#define dprintf_local1(str,arg1)\
   fprintf(dstderr, str, arg1)
-#define dprintf2(str,arg1,arg2)\
+#define dprintf_local2(str,arg1,arg2)\
   fprintf(dstderr, str, arg1, arg2)
-#define dprintf3(str,arg1,arg2,arg3)\
+#define dprintf_local3(str,arg1,arg2,arg3)\
   fprintf(dstderr, str, arg1, arg2, arg3)
-#define dprintf4(str,arg1,arg2,arg3,arg4)\
+#define dprintf_local4(str,arg1,arg2,arg3,arg4)\
   fprintf(dstderr, str, arg1, arg2, arg3, arg4)
-#define dprintf5(str,arg1,arg2,arg3,arg4,arg5)\
+#define dprintf_local5(str,arg1,arg2,arg3,arg4,arg5)\
   fprintf(dstderr, str, arg1, arg2, arg3, arg4, arg5)
-#define dprintf6(str,arg1,arg2,arg3,arg4,arg5,arg6)\
+#define dprintf_local6(str,arg1,arg2,arg3,arg4,arg5,arg6)\
   fprintf(dstderr, str, arg1, arg2, arg3, arg4, arg5, arg6)
-#define dprintf7(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7)\
+#define dprintf_local7(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7)\
   fprintf(dstderr, str, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
-#define dprintf8(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8)\
+#define dprintf_local8(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8)\
   fprintf(dstderr, str, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8)
-#define dprintf9(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)\
+#define dprintf_local9(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9)\
   fprintf(dstderr, str, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9)
-#define dprintf10(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10)\
+#define dprintf_local10(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10)\
   fprintf(dstderr, str, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10)
-#define dprintf11(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)\
+#define dprintf_local11(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11)\
   fprintf(dstderr, str, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11)
-#define dprintf12(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12)\
+#define dprintf_local12(str,arg1,arg2,arg3,arg4,arg5,arg6,arg7,arg8,arg9,arg10,arg11,arg12)\
   fprintf(dstderr, str, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8, arg9, arg10, arg11, arg12)
 
 /* eprintf_program_name may be redefined. */

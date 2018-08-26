@@ -654,13 +654,13 @@ vesa_get_info(int mode, vesa_info _ss *info)
 	int86x(0x10, &regs, &regs, &sregs);
 #ifdef DEBUG
 	if ( regs.h.ah == 0 && regs.h.al == 0x4f )
-		dprintf8("vesa_get_info(%x): ma=%x wa=%x/%x wg=%x ws=%x wseg=%x/%x\n",
+		dprintf_local8("vesa_get_info(%x): ma=%x wa=%x/%x wg=%x ws=%x wseg=%x/%x\n",
 			 mode, info->mode_attributes,
 			 info->win_a_attributes, info->win_b_attributes,
 			 info->win_granularity, info->win_size,
 			 info->win_a_segment, info->win_b_segment);
 	else
-		dprintf3("vesa_get_info(%x) failed: ah=%x al=%x\n",
+		dprintf_local3("vesa_get_info(%x) failed: ah=%x al=%x\n",
 			 mode, regs.h.ah, regs.h.al);
 #endif
 	return (regs.h.ah == 0 && regs.h.al == 0x4f ? 0 : -1);

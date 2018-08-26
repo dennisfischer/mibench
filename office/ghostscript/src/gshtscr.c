@@ -500,7 +500,7 @@ gs_screen_next(gs_screen_enum *penum, floatp value)
 if ( gs_debug_c('H') )
    {	gs_point pt;
 	gs_screen_currentpoint(penum, &pt);
-	dprintf6("[H]sample x=%d y=%d (%f,%f): %f -> %u\n",
+	dprintf_local6("[H]sample x=%d y=%d (%f,%f): %f -> %u\n",
 		 penum->x, penum->y, pt.x, pt.y, value, sample);
    }
 #endif

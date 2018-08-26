@@ -230,9 +230,9 @@ gx_sort_ht_order(gx_ht_bit *recs, uint N)
 #ifdef DEBUG
 if ( gs_debug_c('H') )
 	{	uint i;
-		dprintf("[H]Sorted samples:\n");
+		dprintf_local("[H]Sorted samples:\n");
 		for ( i = 0; i < N; i++ )
-			dprintf3("%5u: %5u: %u\n",
+			dprintf_local3("%5u: %5u: %u\n",
 				 i, recs[i].offset, recs[i].mask);
 	}
 #endif
@@ -318,9 +318,9 @@ gx_ht_construct_bits(gx_ht_order *porder)
 	}
 #ifdef DEBUG
 if ( gs_debug_c('H') )
-	   {	dprintf1("[H]Halftone order bits 0x%lx:\n", (ulong)bits);
+	   {	dprintf_local1("[H]Halftone order bits 0x%lx:\n", (ulong)bits);
 		for ( i = 0, phb = bits; i < size; i++, phb++ )
-			dprintf3("%4d: %u:0x%lx\n", i, phb->offset,
+			dprintf_local3("%4d: %u:0x%lx\n", i, phb->offset,
 				 (ulong)phb->mask);
 	   }
 #endif

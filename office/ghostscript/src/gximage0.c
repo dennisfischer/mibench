@@ -84,7 +84,7 @@ gx_default_image_data(gx_device *dev,
 		  { int i, n = width_spp;
 		    dputs("[B]row:");
 		    for ( i = 0; i < n; i++ )
-		      dprintf1(" %02x", buffer[i]);
+		      dprintf_local1(" %02x", buffer[i]);
 		    dputs("\n");
 		  }
 #endif

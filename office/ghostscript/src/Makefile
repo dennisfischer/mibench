@@ -174,7 +174,7 @@ CONFIG=
 # Define the name of the C compiler.
 
 #CC=gcc -mv8 -static
-CC=gcc -static
+CC=gcc -static -DM_UNIX
 #CC=gcc
 
 # Define the name of the linker for the final link step.

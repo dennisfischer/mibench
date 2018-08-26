@@ -34,7 +34,7 @@ private int gx_path_new_subpath(P1(gx_path *));
 #ifdef DEBUG
 private void gx_print_segment(P1(const segment *));
 #  define trace_segment(msg, pseg)\
-     if ( gs_debug_c('P') ) dprintf(msg), gx_print_segment(pseg);
+     if ( gs_debug_c('P') ) dprintf_local(msg), gx_print_segment(pseg);
 #else
 #  define trace_segment(msg, pseg) DO_NOTHING
 #endif
@@ -490,7 +490,7 @@ path_alloc_copy(gx_path *ppath)
 /* Print out a path with a label */
 void
 gx_dump_path(const gx_path *ppath, const char *tag)
-{	dprintf2("[P]Path 0x%lx %s:\n", (ulong)ppath, tag);
+{	dprintf_local2("[P]Path 0x%lx %s:\n", (ulong)ppath, tag);
 	gx_path_print(ppath);
 }
 
@@ -498,11 +498,11 @@ gx_dump_path(const gx_path *ppath, const char *tag)
 void
 gx_path_print(const gx_path *ppath)
 {	const segment *pseg = (const segment *)ppath->first_subpath;
-	dprintf5("   state_flags=%d subpaths=%d, curves=%d, point=(%f,%f)\n",
+	dprintf_local5("   state_flags=%d subpaths=%d, curves=%d, point=(%f,%f)\n",
 		 ppath->state_flags, ppath->subpath_count, ppath->curve_count,
 		 fixed2float(ppath->position.x),
 		 fixed2float(ppath->position.y));
-	dprintf5("   box=(%f,%f),(%f,%f) last=0x%lx\n",
+	dprintf_local5("   box=(%f,%f),(%f,%f) last=0x%lx\n",
 		 fixed2float(ppath->bbox.p.x), fixed2float(ppath->bbox.p.y),
 		 fixed2float(ppath->bbox.q.x), fixed2float(ppath->bbox.q.y),
 		 (ulong)ppath->box_last);
@@ -524,28 +524,28 @@ gx_print_segment(const segment *pseg)
 	  {
 	  case s_start:
 #define psub ((const subpath *)pseg)
-	    dprintf5("%s: %6g %6g moveto\t%% #curves=%d last=0x%lx\n",
+	    dprintf_local5("%s: %6g %6g moveto\t%% #curves=%d last=0x%lx\n",
 		     out, px, py, psub->curve_count, (ulong)psub->last);
 #undef psub
 	    break;
 	  case s_curve:
 #define pcur ((const curve_segment *)pseg)
-	    dprintf7("%s: %g %g %g %g %g %g curveto\n",
+	    dprintf_local7("%s: %g %g %g %g %g %g curveto\n",
 		     out, fixed2float(pcur->p1.x), fixed2float(pcur->p1.y),
 		     fixed2float(pcur->p2.x), fixed2float(pcur->p2.y), px, py);
 #undef pcur
 	    break;
 	  case s_line:
-	    dprintf3("%s: %6g %6g lineto\n", out, px, py);
+	    dprintf_local3("%s: %6g %6g lineto\n", out, px, py);
 	    break;
 	  case s_line_close:
 #define plc ((const line_close_segment *)pseg)
-	    dprintf4("%s: closepath\t%% %g %g 0x%lx\n",
+	    dprintf_local4("%s: closepath\t%% %g %g 0x%lx\n",
 		     out, px, py, (ulong)(plc->sub));
 #undef plc
 	    break;
 	  default:
-	    dprintf4("%s: %g %g <type 0x%x>\n", out, px, py, pseg->type);
+	    dprintf_local4("%s: %g %g <type 0x%x>\n", out, px, py, pseg->type);
 	  }
 }
 

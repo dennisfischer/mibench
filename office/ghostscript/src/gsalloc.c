@@ -904,8 +904,8 @@ alloc_close_chunk(gs_ref_memory_t *mem)
 	{	*mem->pcc = mem->cc;
 #ifdef DEBUG
 		if ( gs_debug_c('a') )
-		  {	dprintf1("[a%d]", mem->space);
-			dprintf_chunk("closing chunk", mem->pcc);
+		  {	dprintf_local1("[a%d]", mem->space);
+			dprintf_local_chunk("closing chunk", mem->pcc);
 		  }
 #endif
 	}
@@ -918,8 +918,8 @@ alloc_open_chunk(gs_ref_memory_t *mem)
 	{	mem->cc = *mem->pcc;
 #ifdef DEBUG
 		if ( gs_debug_c('a') )
-		  {	dprintf1("[a%d]", mem->space);
-			dprintf_chunk("opening chunk", mem->pcc);
+		  {	dprintf_local1("[a%d]", mem->space);
+			dprintf_local_chunk("opening chunk", mem->pcc);
 		  }
 #endif
 	}
@@ -1107,7 +1107,7 @@ debug_dump_contents(const byte *bot, const byte *top, int indent,
 
 	    dputs(sepr);
 	    if ( block + i >= bot && block + i < top )
-	      dprintf1("%02x", block[i]);
+	      dprintf_local1("%02x", block[i]);
 	    else
 	      dputs("  ");
 	  }
@@ -1121,7 +1121,7 @@ debug_dump_contents(const byte *bot, const byte *top, int indent,
 	      if ( block + i >= bot && block + i < top &&
 		   (ch = block[i]) >= 32 && ch <= 126
 		 )
-		dprintf1("  %c", ch);
+		dprintf_local1("  %c", ch);
 	      else
 		dputs("   ");
 	    }
@@ -1141,27 +1141,27 @@ debug_print_object(const void *obj, const dump_control_t *control)
 	const gs_memory_struct_type_t *type = pre->o_type;
 	dump_options_t options = control->options;
 
-	dprintf3("  pre=0x%lx(obj=0x%lx) size=%lu", (ulong)pre, (ulong)obj,
+	dprintf_local3("  pre=0x%lx(obj=0x%lx) size=%lu", (ulong)pre, (ulong)obj,
 		 size);
 	switch ( options & (dump_do_type_addresses | dump_do_no_types) )
 	  {
 	  case dump_do_type_addresses + dump_do_no_types: /* addresses only */
-	    dprintf1(" type=0x%lx", (ulong)type);
+	    dprintf_local1(" type=0x%lx", (ulong)type);
 	    break;
 	  case dump_do_type_addresses: /* addresses & names */
-	    dprintf2(" type=%s(0x%lx)", struct_type_name_string(type),
+	    dprintf_local2(" type=%s(0x%lx)", struct_type_name_string(type),
 		     (ulong)type);
 	    break;
 	  case 0:		/* names only */
-	    dprintf1(" type=%s", struct_type_name_string(type));
+	    dprintf_local1(" type=%s", struct_type_name_string(type));
 	  case dump_do_no_types: /* nothing */
 	    ;
 	  }
 	if ( options & dump_do_marks ) {
 	  if ( pre->o_large )
-	    dprintf1(" lmark=%d", pre->o_lmark);
+	    dprintf_local1(" lmark=%d", pre->o_lmark);
 	  else
-	    dprintf2(" smark/back=%u (0x%x)", pre->o_smark, pre->o_smark);
+	    dprintf_local2(" smark/back=%u (0x%x)", pre->o_smark, pre->o_smark);
 	}
 	dputc('\n');
 	if ( type == &st_free )
@@ -1176,11 +1176,11 @@ debug_print_object(const void *obj, const dump_control_t *control)
 	    for ( ; (ptype = (*proc)(pre + 1, size, index, &ptr)) != 0;
 		  ++index
 		) {
-	      dprintf1("    ptr %u: ", index);
+	      dprintf_local1("    ptr %u: ", index);
 	      if ( ptype == ptr_string_type || ptype == ptr_const_string_type ) {
 		const gs_const_string *str = (const gs_const_string *)ptr;
 
-		dprintf2("0x%lx(%u)", (ulong)str->data, str->size);
+		dprintf_local2("0x%lx(%u)", (ulong)str->data, str->size);
 		if ( options & dump_do_pointed_strings ) {
 		  dputs(" =>\n");
 		  debug_dump_contents(str->data, str->data + str->size, 6,
@@ -1189,7 +1189,7 @@ debug_print_object(const void *obj, const dump_control_t *control)
 		  dputc('\n');
 		}
 	      } else {
-		dprintf1((ptr_between(ptr, obj, (byte *)obj + size) ?
+		dprintf_local1((ptr_between(ptr, obj, (byte *)obj + size) ?
 			  "(0x%lx)\n" : "0x%lx\n"), (ulong)ptr);
 	      }
 	    }
@@ -1203,21 +1203,21 @@ debug_print_object(const void *obj, const dump_control_t *control)
 /* Relevant options: all. */
 void
 debug_dump_chunk(const chunk_t *cp, const dump_control_t *control)
-{	dprintf1("chunk at 0x%lx:\n", (ulong)cp);
-	dprintf3("   chead=0x%lx  cbase=0x%lx sbase=0x%lx\n",
+{	dprintf_local1("chunk at 0x%lx:\n", (ulong)cp);
+	dprintf_local3("   chead=0x%lx  cbase=0x%lx sbase=0x%lx\n",
 		 (ulong)cp->chead, (ulong)cp->cbase, (ulong)cp->sbase);
-	dprintf3("    rcur=0x%lx   rtop=0x%lx  cbot=0x%lx\n",
+	dprintf_local3("    rcur=0x%lx   rtop=0x%lx  cbot=0x%lx\n",
 		 (ulong)cp->rcur, (ulong)cp->rtop, (ulong)cp->cbot);
-	dprintf4("    ctop=0x%lx climit=0x%lx smark=0x%lx, size=%u\n",
+	dprintf_local4("    ctop=0x%lx climit=0x%lx smark=0x%lx, size=%u\n",
 		 (ulong)cp->ctop, (ulong)cp->climit, (ulong)cp->smark,
 		 cp->smark_size);
-	dprintf2("  sreloc=0x%lx   cend=0x%lx\n",
+	dprintf_local2("  sreloc=0x%lx   cend=0x%lx\n",
 		 (ulong)cp->sreloc, (ulong)cp->cend);
-	dprintf5("cprev=0x%lx cnext=0x%lx outer=0x%lx inner_count=%u has_refs=%s\n",
+	dprintf_local5("cprev=0x%lx cnext=0x%lx outer=0x%lx inner_count=%u has_refs=%s\n",
 		 (ulong)cp->cprev, (ulong)cp->cnext, (ulong)cp->outer,
 		 cp->inner_count, (cp->has_refs? "true" : "false"));
 
-	dprintf2("  sfree1=0x%lx   sfree=0x%x\n",
+	dprintf_local2("  sfree1=0x%lx   sfree=0x%x\n",
 		 (ulong)cp->sfree1, cp->sfree);
 	if ( control->options & dump_do_strings ) {
 	  debug_dump_contents((control->bottom == 0 ? cp->ctop :

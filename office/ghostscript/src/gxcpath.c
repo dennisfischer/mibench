@@ -988,18 +988,18 @@ gx_cpath_print(const gx_clip_path *pcpath)
 		gx_path_print(&pcpath->path);
 	else
 		dputs("   (segments not valid)\n");
-	dprintf4("   inner_box=(%g,%g),(%g,%g)\n",
+	dprintf_local4("   inner_box=(%g,%g),(%g,%g)\n",
 		 fixed2float(pcpath->inner_box.p.x),
 		 fixed2float(pcpath->inner_box.p.y),
 		 fixed2float(pcpath->inner_box.q.x),
 		 fixed2float(pcpath->inner_box.q.y));
-	dprintf5("     outer_box=(%g,%g),(%g,%g) count=%d\n",
+	dprintf_local5("     outer_box=(%g,%g),(%g,%g) count=%d\n",
 		 fixed2float(pcpath->outer_box.p.x),
 		 fixed2float(pcpath->outer_box.p.y),
 		 fixed2float(pcpath->outer_box.q.x),
 		 fixed2float(pcpath->outer_box.q.y),
 		 pcpath->list.count);
-	dprintf2("     rule=%d outside=%d\n",
+	dprintf_local2("     rule=%d outside=%d\n",
 		 pcpath->rule, pcpath->list.outside);
 	switch ( pcpath->list.count )
 	{
@@ -1008,7 +1008,7 @@ gx_cpath_print(const gx_clip_path *pcpath)
 	default: pr = pcpath->list.head;
 	}
 	for ( ; pr != 0; pr = pr->next )
-	  dprintf4("   rect: (%d,%d),(%d,%d)\n",
+	  dprintf_local4("   rect: (%d,%d),(%d,%d)\n",
 		   pr->xmin, pr->ymin, pr->xmax, pr->ymax);
 }
 

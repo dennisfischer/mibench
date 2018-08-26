@@ -181,9 +181,9 @@ pushed:	       if_debug3('1', "[1]%d: (%d) %f\n",
 	     { static const char *c2names[] =
 	        { char2_command_names };
 	       if ( c2names[c] == 0 )
-		 dprintf2("[1]0x%lx: %02x??\n", (ulong)(cip - 1), c);
+		 dprintf_local2("[1]0x%lx: %02x??\n", (ulong)(cip - 1), c);
 	       else
-		 dprintf3("[1]0x%lx: %02x %s\n", (ulong)(cip - 1), c,
+		 dprintf_local3("[1]0x%lx: %02x %s\n", (ulong)(cip - 1), c,
 			  c2names[c]);
 	     }
 #endif
@@ -439,9 +439,9 @@ vstem:		check_first_operator(!((csp - cstack) & 1));
 		  { static const char *ce2names[] =
 		     { char2_extended_command_names };
 		    if ( ce2names[c] == 0 )
-		      dprintf2("[1]0x%lx: %02x??\n", (ulong)(cip - 1), c);
+		      dprintf_local2("[1]0x%lx: %02x??\n", (ulong)(cip - 1), c);
 		    else
-		      dprintf3("[1]0x%lx: %02x %s\n", (ulong)(cip - 1), c,
+		      dprintf_local3("[1]0x%lx: %02x %s\n", (ulong)(cip - 1), c,
 			       ce2names[c]);
 		  }
 #endif

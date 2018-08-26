@@ -228,10 +228,10 @@ top:	code = gx_path_current_point_inline(pgs->path, &pt);
 					  "[K]bits");
 		else
 			dputs("[K]no bits\n");
-		dprintf3("[K]copying 0x%lx, offset=(%g,%g)\n", (ulong)cc,
+		dprintf_local3("[K]copying 0x%lx, offset=(%g,%g)\n", (ulong)cc,
 			 fixed2float(-cc->offset.x),
 			 fixed2float(-cc->offset.y));
-		dprintf6("   at (%g,%g)+(%d,%d)->(%d,%d)\n",
+		dprintf_local6("   at (%g,%g)+(%d,%d)->(%d,%d)\n",
 			 fixed2float(pt.x), fixed2float(pt.y),
 			 penum->ftx, penum->fty, x, y);
 	}

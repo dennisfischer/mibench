@@ -589,7 +589,7 @@ cie_cache_finish(os_ptr op)
 	if ( gs_debug_c('c') )
 	{	int i;
 		for ( i = 0; i < gx_cie_cache_size; i += 4 )
-		  dprintf5("[c]  cache[%3d]=%g, %g, %g, %g\n", i,
+		  dprintf_local5("[c]  cache[%3d]=%g, %g, %g, %g\n", i,
 			   pcache->values[i], pcache->values[i + 1],
 			   pcache->values[i + 2], pcache->values[i + 3]);
 	}

@@ -110,7 +110,7 @@ typedef struct hce_table_s {
 #ifdef DEBUG
 #  define hc_print_value(code, clen)\
     (gs_debug_c('W') ?\
-     (dprintf2("[W]0x%x,%d\n", code, clen), 0) : 0)
+     (dprintf_local2("[W]0x%x,%d\n", code, clen), 0) : 0)
 #  define hc_print_value_then(code, clen) hc_print_value(code, clen), 
 #else
 #  define hc_print_value(code, clen) 0

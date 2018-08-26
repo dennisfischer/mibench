@@ -570,14 +570,14 @@ gx_default_strip_tile_rectangle(gx_device *dev, const gx_strip_bitmap *tiles,
 if ( gs_debug_c('t') )
    {	int ptx, pty;
 	const byte *ptp = tiles->data;
-	dprintf3("[t]tile %dx%d raster=%d;",
+	dprintf_local3("[t]tile %dx%d raster=%d;",
 		tiles->size.x, tiles->size.y, tiles->raster);
-	dprintf6(" x,y=%d,%d w,h=%d,%d p=%d,%d\n",
+	dprintf_local6(" x,y=%d,%d w,h=%d,%d p=%d,%d\n",
 		x, y, w, h, px, py);
 	for ( pty = 0; pty < tiles->size.y; pty++ )
-	   {	dprintf("   ");
+	   {	dprintf_local("   ");
 		for ( ptx = 0; ptx < tiles->raster; ptx++ )
-			dprintf1("%3x", *ptp++);
+			dprintf_local1("%3x", *ptp++);
 	   }
 	dputc('\n');
    }
@@ -628,7 +628,7 @@ if ( gs_debug_c('t') )
 #ifdef DEBUG
 #define copy_tile(sx, tx, ty, tw, th)\
   if ( gs_debug_c('t') )\
-	dprintf5("   copy sx=%d x=%d y=%d w=%d h=%d\n",\
+	dprintf_local5("   copy sx=%d x=%d y=%d w=%d h=%d\n",\
 		 sx, tx, ty, tw, th);\
   real_copy_tile(sx, tx, ty, tw, th)
 #else

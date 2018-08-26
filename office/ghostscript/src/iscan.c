@@ -299,7 +299,7 @@ scan_comment(const byte *base, const byte *end, bool saved)
 	  { 
 #ifdef DEBUG
 		if ( gs_debug_c('%') )
-		  {	dprintf2("[%%%%%s%c]", sstr, (len >= 3 ? '+' : '-'));
+		  {	dprintf_local2("[%%%%%s%c]", sstr, (len >= 3 ? '+' : '-'));
 			fwrite(base, 1, len, dstderr);
 			dputs("\n");
 		  }
@@ -311,7 +311,7 @@ scan_comment(const byte *base, const byte *end, bool saved)
 	  {
 #ifdef DEBUG
 		if ( gs_debug_c('%') )
-		  {	dprintf2("[%% %s%c]", sstr, (len >= 2 ? '+' : '-'));
+		  {	dprintf_local2("[%% %s%c]", sstr, (len >= 2 ? '+' : '-'));
 			fwrite(base, 1, len, dstderr);
 			dputs("\n");
 		  }

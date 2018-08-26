@@ -45,7 +45,7 @@ private void near trace_matrix(P1(const gs_matrix *));
 #ifdef DEBUG
 #define print_inverse(pgs)\
 if ( gs_debug_c('x') )\
-	dprintf("[x]Inverting:\n"), trace_ctm(pgs), trace_matrix(&pgs->ctm_inverse)
+	dprintf_local("[x]Inverting:\n"), trace_ctm(pgs), trace_matrix(&pgs->ctm_inverse)
 #else
 #define print_inverse(pgs) DO_NOTHING
 #endif
@@ -102,7 +102,7 @@ gs_initmatrix(gs_state *pgs)
 	set_ctm_only(pgs, imat);
 #ifdef DEBUG
 if ( gs_debug_c('x') )
-	dprintf("[x]initmatrix:\n"), trace_ctm(pgs);
+	dprintf_local("[x]initmatrix:\n"), trace_ctm(pgs);
 #endif
 	return 0;
 }
@@ -153,7 +153,7 @@ gs_setcharmatrix(gs_state *pgs, const gs_matrix *pmat)
 	char_tm_only(pgs) = cmat;
 #ifdef DEBUG
 if ( gs_debug_c('x') )
-	dprintf("[x]setting char_tm:"), trace_matrix_fixed(&pgs->char_tm);
+	dprintf_local("[x]setting char_tm:"), trace_matrix_fixed(&pgs->char_tm);
 #endif
 	pgs->char_tm_valid = true;
 	return 0;
@@ -183,7 +183,7 @@ gs_setmatrix(gs_state *pgs, const gs_matrix *pmat)
 	set_ctm_only(pgs, *pmat);
 #ifdef DEBUG
 if ( gs_debug_c('x') )
-	dprintf("[x]setmatrix:\n"), trace_ctm(pgs);
+	dprintf_local("[x]setmatrix:\n"), trace_ctm(pgs);
 #endif
 	return 0;
 }
@@ -194,7 +194,7 @@ gs_imager_setmatrix(gs_imager_state *pis, const gs_matrix *pmat)
 	set_ctm_only(pis, *pmat);
 #ifdef DEBUG
 if ( gs_debug_c('x') )
-	dprintf("[x]imager_setmatrix:\n"), trace_ctm(pis);
+	dprintf_local("[x]imager_setmatrix:\n"), trace_ctm(pis);
 #endif
 	return 0;
 }
@@ -221,7 +221,7 @@ gs_translate(gs_state *pgs, floatp dx, floatp dy)
 	update_ctm(pgs, pt.x, pt.y);
 #ifdef DEBUG
 if ( gs_debug_c('x') )
-	dprintf4("[x]translate: %f %f -> %f %f\n",
+	dprintf_local4("[x]translate: %f %f -> %f %f\n",
 		 dx, dy, pt.x, pt.y),
 	trace_ctm(pgs);
 #endif
@@ -237,7 +237,7 @@ gs_scale(gs_state *pgs, floatp sx, floatp sy)
 	pgs->ctm_inverse_valid = false, pgs->char_tm_valid = false;
 #ifdef DEBUG
 if ( gs_debug_c('x') )
-	dprintf2("[x]scale: %f %f\n", sx, sy), trace_ctm(pgs);
+	dprintf_local2("[x]scale: %f %f\n", sx, sy), trace_ctm(pgs);
 #endif
 	return 0;
 }
@@ -249,7 +249,7 @@ gs_rotate(gs_state *pgs, floatp ang)
 	pgs->ctm_inverse_valid = false, pgs->char_tm_valid = false;
 #ifdef DEBUG
 if ( gs_debug_c('x') )
-	dprintf1("[x]rotate: %f\n", ang), trace_ctm(pgs);
+	dprintf_local1("[x]rotate: %f\n", ang), trace_ctm(pgs);
 #endif
 	return code;
 }
@@ -264,7 +264,7 @@ gs_concat(gs_state *pgs, const gs_matrix *pmat)
 	set_ctm_only(pgs, cmat);
 #ifdef DEBUG
 if ( gs_debug_c('x') )
-	dprintf("[x]concat:\n"), trace_matrix(pmat), trace_ctm(pgs);
+	dprintf_local("[x]concat:\n"), trace_matrix(pmat), trace_ctm(pgs);
 #endif
 	return code;
 }
@@ -356,10 +356,10 @@ gx_translate_to_fixed(register gs_state *pgs, fixed px, fixed py)
 	}
 #ifdef DEBUG
 if ( gs_debug_c('x') )
-	dprintf2("[x]translate_to_fixed %g, %g:\n",
+	dprintf_local2("[x]translate_to_fixed %g, %g:\n",
 		 fixed2float(px), fixed2float(py)),
 	trace_ctm(pgs),
-	dprintf("[x]   char_tm:\n"),
+	dprintf_local("[x]   char_tm:\n"),
 	trace_matrix_fixed(&pgs->char_tm);
 #endif
 	return 0;
@@ -434,9 +434,9 @@ gx_matrix_to_fixed_coeff(const gs_matrix *pmat, register fixed_coeff *pfc,
 	set_c(yy);
 #ifdef DEBUG
 if ( gs_debug_c('x') )
-   {	dprintf6("[x]ctm: [%6g %6g %6g %6g %6g %6g]\n",
+   {	dprintf_local6("[x]ctm: [%6g %6g %6g %6g %6g %6g]\n",
 		 ctm.xx, ctm.xy, ctm.yx, ctm.yy, ctm.tx, ctm.ty);
-	dprintf6("   scale=%d fc: [0x%lx 0x%lx 0x%lx 0x%lx] shift=%d\n",
+	dprintf_local6("   scale=%d fc: [0x%lx 0x%lx 0x%lx 0x%lx] shift=%d\n",
 		 scale, pfc->xx.l, pfc->xy.l, pfc->yx.l, pfc->yy.l,
 		 pfc->shift);
    }
@@ -454,7 +454,7 @@ private void near
 trace_matrix_fixed(const gs_matrix_fixed *pmat)
 {	trace_matrix((const gs_matrix *)pmat);
 	if ( pmat->txy_fixed_valid )
-	  {	dprintf2("\t\tt_fixed: [%6g %6g]\n",
+	  {	dprintf_local2("\t\tt_fixed: [%6g %6g]\n",
 			 fixed2float(pmat->tx_fixed),
 			 fixed2float(pmat->ty_fixed));
 	  }
@@ -464,7 +464,7 @@ trace_matrix_fixed(const gs_matrix_fixed *pmat)
 }
 private void near
 trace_matrix(register const gs_matrix *pmat)
-{	dprintf6("\t[%6g %6g %6g %6g %6g %6g]\n",
+{	dprintf_local6("\t[%6g %6g %6g %6g %6g %6g]\n",
 		 pmat->xx, pmat->xy, pmat->yx, pmat->yy, pmat->tx, pmat->ty);
 }
 

@@ -120,7 +120,7 @@ wmatch(const byte *str, uint len, const byte *pstr, uint plen,
 	    fwrite(str, 1, len, dstderr);
 	    dputs("\", \"");
 	    fwrite(pstr, 1, plen, dstderr);
-	    dprintf1("\") = %s\n", (match ? "TRUE" : "false"));
+	    dprintf_local1("\") = %s\n", (match ? "TRUE" : "false"));
 	  }
 	return match;
 }

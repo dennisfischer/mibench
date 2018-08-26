@@ -227,24 +227,24 @@ gs_private_st_complex_only(st_alloc_change, alloc_change_t, "alloc_change",
 #ifdef DEBUG
 private void
 alloc_save_print(alloc_change_t *cp, bool print_current)
-{	dprintf2(" 0x%lx: 0x%lx: ", (ulong)cp, (ulong)cp->where);
+{	dprintf_local2(" 0x%lx: 0x%lx: ", (ulong)cp, (ulong)cp->where);
 	if ( r_is_packed(&cp->contents) )
 	  { if ( print_current )
-	      dprintf2("saved=%x cur=%x\n", *(ref_packed *)&cp->contents,
+	      dprintf_local2("saved=%x cur=%x\n", *(ref_packed *)&cp->contents,
 		       *cp->where);
 	    else
-	      dprintf1("%x\n", *(ref_packed *)&cp->contents);
+	      dprintf_local1("%x\n", *(ref_packed *)&cp->contents);
 	  }
 	else
 	  { if ( print_current )
-	      dprintf6("saved=%x %x %lx cur=%x %x %lx\n",
+	      dprintf_local6("saved=%x %x %lx cur=%x %x %lx\n",
 		       r_type_attrs(&cp->contents), r_size(&cp->contents),
 		       (ulong)cp->contents.value.intval,
 		       r_type_attrs((ref *)cp->where),
 		       r_size((ref *)cp->where),
 		       (ulong)((ref *)cp->where)->value.intval);
 	    else
-	      dprintf3("%x %x %lx\n",
+	      dprintf_local3("%x %x %lx\n",
 		       r_type_attrs(&cp->contents), r_size(&cp->contents),
 		       (ulong)cp->contents.value.intval);
 	  }
@@ -435,7 +435,7 @@ alloc_save_change(gs_dual_memory_t *dmem, const ref *pcont,
 	mem->changes = cp;
 #ifdef DEBUG
 if ( gs_debug_c('U') )
-	{	dprintf1("[u]save(%s)", client_name_string(cname));
+	{	dprintf_local1("[u]save(%s)", client_name_string(cname));
 		alloc_save_print(cp, false);
 	}
 #endif
@@ -631,7 +631,7 @@ restore_space(gs_ref_memory_t *mem)
 		  {
 #ifdef DEBUG
 if ( gs_debug_c('U') )
-		    {	dprintf("[U]restore");
+		    {	dprintf_local("[U]restore");
 			alloc_save_print(cp, true);
 		    }
 #endif

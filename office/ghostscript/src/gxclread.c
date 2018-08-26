@@ -53,13 +53,13 @@ extern const gs_color_space_type gs_color_space_type_Indexed;
 private void
 cmd_print_bits(const byte *data, int width, int height, int raster)
 {	int i, j;
-	dprintf3("[L]width=%d, height=%d, raster=%d\n",
+	dprintf_local3("[L]width=%d, height=%d, raster=%d\n",
 		 width, height, raster);
 	for ( i = 0; i < height; i++ )
 	   {	const byte *row = data + i * raster;
-		dprintf("[L]");
+		dprintf_local("[L]");
 		for ( j = 0; j < raster; j++ )
-		  dprintf1(" %02x", row[j]);
+		  dprintf_local1(" %02x", row[j]);
 		dputc('\n');
 	   }
 }
@@ -497,9 +497,9 @@ in:	/* Initialize for a new page. */
 		if ( gs_debug_c('L') )
 		  { const char **sub = cmd_sub_op_names[op >> 4];
 		    if ( sub )
-		      dprintf1("[L]%s:", sub[op & 0xf]);
+		      dprintf_local1("[L]%s:", sub[op & 0xf]);
 		    else
-		      dprintf2("[L]%s %d:", cmd_op_names[op >> 4], op & 0xf);
+		      dprintf_local2("[L]%s %d:", cmd_op_names[op >> 4], op & 0xf);
 		  }
 #endif
 		switch ( op >> 4 )
@@ -717,7 +717,7 @@ stb:				{ uint rep_width = bits.width / bits.x_reps;
 					  if ( gs_debug_c('L') )
 					    { uint i;
 					      for ( i = 0; i < count / sizeof(*mdata); ++i )
-						dprintf1(" 0x%04x", mdata[i]);
+						dprintf_local1(" 0x%04x", mdata[i]);
 					      dputc('\n');
 					    }
 					}
@@ -802,9 +802,9 @@ stb:				{ uint rep_width = bits.width / bits.x_reps;
 #ifdef DEBUG
 				      if ( gs_debug_c('L') )
 					{ int i;
-					  dprintf1(" levels[%u]", ht_data_index);
+					  dprintf_local1(" levels[%u]", ht_data_index);
 					  for ( i = 0; i < n; ++i )
-					    dprintf1(" %u",
+					    dprintf_local1(" %u",
 						     porder->levels[ht_data_index + i]);
 					  dputc('\n');
 					}
@@ -820,11 +820,11 @@ stb:				{ uint rep_width = bits.width / bits.x_reps;
 #ifdef DEBUG
 				      if ( gs_debug_c('L') )
 					{ int i;
-					  dprintf1(" bits[%u]", ht_data_index - porder->num_levels);
+					  dprintf_local1(" bits[%u]", ht_data_index - porder->num_levels);
 					  for ( i = 0; i < n; ++i )
 					    { const gx_ht_bit *pb =
 						&porder->bits[ht_data_index - porder->num_levels + i];
-					      dprintf2(" (%u,0x%lx)",
+					      dprintf_local2(" (%u,0x%lx)",
 						       pb->offset,
 						       (ulong)pb->mask);
 					    }
@@ -1120,7 +1120,7 @@ copy:			cmd_getw(state.rect.x, cbp);
 				  }
 #ifdef DEBUG
 				if ( gs_debug_c('L') )
-				  { dprintf2(" depth=%d, data_x=%d\n",
+				  { dprintf_local2(" depth=%d, data_x=%d\n",
 					     depth, data_x);
 				    cmd_print_bits(source, state.rect.width,
 						   state.rect.height, raster);
@@ -1250,12 +1250,12 @@ set_phase:		tile_phase.x =
 #ifdef DEBUG
 				  if ( gs_debug_c('L') )
 				    { int i;
-				      dprintf4(" dot=%g(mode %d) adapt=%d offset=%g [",
+				      dprintf_local4(" dot=%g(mode %d) adapt=%d offset=%g [",
 					       dot_length,
 					       (nb & 0x40) != 0,
 					       (nb & 0x80) != 0, offset);
 				      for ( i = 0; i < n; ++i )
-					dprintf1("%g ", dash_pattern[i]);
+					dprintf_local1("%g ", dash_pattern[i]);
 				      dputs("]\n");
 				    }
 #endif
@@ -1441,7 +1441,7 @@ set_phase:		tile_phase.x =
 					  for ( i = 0; i < num_components * 2;
 						++i
 					      )
-					    dprintf1("%g ", image.Decode[i]);
+					    dprintf_local1("%g ", image.Decode[i]);
 					  dputc(']');
 					}
 #endif
@@ -1753,8 +1753,8 @@ bad_op:			lprintf5("Bad op %02x band y0 = %d file pos %ld buf pos %d/%d\n",
 				 op, y0, stell(s), (int)(cbp - cbuf), (int)(cb_end - cbuf));
 			   {	const byte *pp;
 				for ( pp = cbuf; pp < cb_end; pp += 10 )
-				  { dprintf1("%4d:", (int)(pp - cbuf));
-				    dprintf10(" %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
+				  { dprintf_local1("%4d:", (int)(pp - cbuf));
+				    dprintf_local10(" %02x %02x %02x %02x %02x %02x %02x %02x %02x %02x\n",
 					pp[0], pp[1], pp[2], pp[3], pp[4],
 					pp[5], pp[6], pp[7], pp[8], pp[9]);
 				  }

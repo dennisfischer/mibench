@@ -835,9 +835,9 @@ image_band_box(gx_device *dev, const clist_image_enum *pie, int y, int h,
 	bbox.q.y = fixed2float(min(cbox.q.y, by1) + fixed_half);
 #ifdef DEBUG
 	if ( gs_debug_c('b') )
-	  { dprintf6("[b]band box for (%d,%d),(%d,%d), band (%d,%d) =>\n",
+	  { dprintf_local6("[b]band box for (%d,%d),(%d,%d), band (%d,%d) =>\n",
 		      px, py, qx, qy, y, y + h);
-	    dprintf10("      (%g,%g),(%g,%g), matrix=[%g %g %g %g %g %g]\n",
+	    dprintf_local10("      (%g,%g),(%g,%g), matrix=[%g %g %g %g %g %g]\n",
 		      bbox.p.x, bbox.p.y, bbox.q.x, bbox.q.y,
 		      pie->matrix.xx, pie->matrix.xy, pie->matrix.yx,
 		      pie->matrix.yy, pie->matrix.tx, pie->matrix.ty);
