@@ -541,7 +541,8 @@ static void ReadUnigrams (FILE *fp, lm_t *model)
 	model->unigrams[wcnt].prob1.f = p1;
 	model->unigrams[wcnt].bo_wt1.f = bo_wt;
 
-	model->unigrams[wcnt].mapid = wcnt++;
+	model->unigrams[wcnt].mapid = wcnt;
+	wcnt++;
     }
 
     if (model->ucount != wcnt) {

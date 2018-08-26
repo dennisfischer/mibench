@@ -2256,6 +2256,247 @@ search_one_ply_fwd (void)
     lm_next_frame ();
 }
 
+#define DUMP_PHN_TOPSEN_SCR	0
+
+static void compute_phone_perplexity( void )
+{
+  int32 f, nf, p, sum, prob;
+  double pp, sumpp;	/* phone probs */
+  double logpp;	/* log phone probs */
+  double perp;	/* Perplexity */
+  register int32 ts = Table_Size;
+  register int16 *at = Addition_Table;
+
+  nf = searchFrame();
+
+  for (f = 0; f < nf - topsen_window; f++) {
+    /* Find Sum(pscr[p]) over p */
+    sum = - (utt_pscr[f][0] << 4);
+    for (p = 1; p < NumCiPhones; p++) {
+      prob = - (utt_pscr[f][p] << 4);
+      FAST_ADD(sum, sum, prob, at, ts);
+    }
+
+    perp = 0.0;
+    sumpp = 0.0;
+    for (p = 0; p < NumCiPhones; p++) {
+      logpp = (utt_pscr[f][p] << 4);
+      logpp = -logpp;
+      logpp -= sum;
+      logpp *= LOG_BASE;
+      pp = exp(logpp);
+      perp -= pp * logpp;
+
+      sumpp += pp;
+    }
+
+    phone_perplexity[f] = perp;
+  }
+
+  for (; f <= nf; f++)
+    phone_perplexity[f] = 1.0;
+}
+
+typedef struct {
+  int32 score;
+  int16 sf;
+  int16 pred;
+} vithist_t;
+
+
+/*
+ * Search a given CI-phone state-graph using utt_pscr scores for the best path.
+ * Called with a completely initialized vithist matrix; in particular the start state.
+ * (Not the most efficient, but can be used to search arbitrary phone-state graphs!)
+ */
+static search_hyp_t *
+search_pscr_path (vithist_t **vithist,	/* properly initialized */
+                  char **tmat,		/* State-adjacency matrix [from][to] */
+                  int32 *pid,		/* CI-phoneid[0..n_state] */
+                  int32 n_state,	/* #States in graph being searched */
+                  int32 minseg,		/* Min #frames per phone segment */
+                  double tprob,		/* State transition (exit) probability */
+                  int32 final_state)	/* Nominally, where search should exit */
+{
+  int32 i, j, f, tp, newscore, bestscore, bestp, pred_bestp, nseg;
+  search_hyp_t *head, *tmp;
+
+  if (topsen_window <= 1) {
+    E_ERROR("Must use -topsen prediction to use this feature\n");
+    return NULL;
+  }
+
+  tp = LOG(tprob);
+
+  /* Search */
+  for (f = 0; f < n_topsen_frm; f++) {
+    /* Update path scores for current frame state scores */
+    for (i = 0; i < n_state; i++) {
+      vithist[f][i].score -= (utt_pscr[f][pid[i]] << 4);
+
+      /* Propagate to next frame */
+      if (vithist[f][i].sf <= f-minseg) {
+        newscore = vithist[f][i].score + tp;
+
+        for (j = 0; j < n_state; j++) {
+          if ((i == j) || (! tmat[i][j]))
+            continue;
+
+          if (vithist[f+1][j].score < newscore) {
+            vithist[f+1][j].score = newscore;
+            vithist[f+1][j].pred = i;
+            vithist[f+1][j].sf = f+1;
+          }
+        }
+      }
+      if (vithist[f+1][i].score <= vithist[f][i].score) {
+        vithist[f+1][i].score = vithist[f][i].score;
+        vithist[f+1][i].pred = i;
+        vithist[f+1][i].sf = vithist[f][i].sf;
+      }
+    }
+  }
+
+  /* Find proper final state to use */
+  if (vithist[n_topsen_frm-1][final_state].pred < 0) {
+    E_ERROR("%s: search_pscr_path() didn't end in final state\n", uttproc_get_uttid());
+#ifdef DUMP_VITHIST
+    vithist_dump (stdout, vithist, pid, n_topsen_frm, n_state);
+#endif
+
+    bestscore = (int32)0x80000000;
+    bestp = -1;
+    for (i = 0; i < n_state; i++) {
+      if (vithist[n_topsen_frm-1][i].score > bestscore) {
+        bestscore = vithist[n_topsen_frm-1][i].score;
+        bestp = i;
+      }
+    }
+    if ((bestp < 0) || (vithist[n_topsen_frm-1][bestp].score <= WORST_SCORE)) {
+      E_ERROR("%s: search_pscr_path() failed\n", uttproc_get_uttid());
+      return NULL;
+    }
+    final_state = bestp;
+  }
+
+  /* Backtrace.  (Hack!! Misuse of search_hyp_t to store phones, rather than words) */
+  head = (search_hyp_t *) listelem_alloc (sizeof(search_hyp_t));
+  head->wid = pid[final_state];
+  head->ef = n_topsen_frm - 1;
+  head->next = NULL;
+  head->ascr = vithist[n_topsen_frm-1][final_state].score;	/* Fixed later */
+  nseg = 1;
+
+  bestp = final_state;
+  for (f = n_topsen_frm-2; f >= 0; --f) {
+    pred_bestp = vithist[f+1][bestp].pred;
+
+    if (pred_bestp != bestp) {
+      head->sf = f+1;
+      head->ascr -= (vithist[f][pred_bestp].score + tp);
+
+      tmp = (search_hyp_t *) listelem_alloc (sizeof(search_hyp_t));
+      tmp->wid = pid[pred_bestp];
+      tmp->ef = f;
+      tmp->next = head;
+      head = tmp;
+      head->ascr = vithist[f][pred_bestp].score;
+
+      nseg++;
+    }
+    bestp = pred_bestp;
+  }
+  head->sf = 0;
+
+  return head;
+}
+
+#define PHONE_TRANS_PROB	0.0001
+
+static void print_pscr_path (FILE *fp, search_hyp_t *hyp, char const *caption)
+{
+  search_hyp_t *h;
+  int32 pathscore, nf;
+
+  if (! hyp) {
+    E_ERROR("%s(%s): none\n", caption, uttproc_get_uttid());
+    return;
+  }
+
+  fprintf (fp, "%s(%s):\n", caption, uttproc_get_uttid());
+
+  pathscore = nf = 0;
+  for (h = hyp; h; h = h->next) {
+    fprintf (fp, "%5d %5d %10d %s\n", h->sf, h->ef, h->ascr, phone_from_id(h->wid));
+    pathscore += h->ascr;
+    nf = h->ef;
+  }
+  nf++;
+
+  fprintf (fp, "Pathscore(%s (%s)): %d /frame: %d\n",
+           caption, uttproc_get_uttid(), pathscore, (pathscore+(nf>>1))/nf);
+  fprintf (fp, "\n");
+  fflush (fp);
+}
+
+static search_hyp_t *fwdtree_pscr_path ( void )
+{
+  int32 n_state;
+  int32 i, j, s;
+  dict_entry_t *de;
+  vithist_t **pscr_vithist;
+  char **pscr_tmat;
+  int32 *pscr_pid;
+  search_hyp_t *hyp;
+
+  n_state = 0;
+  for (i = 0; i < n_hyp_wid; i++) {
+    de = WordDict->dict_list[hyp_wid[i]];
+    n_state += de->len;
+  }
+
+  pscr_vithist = (vithist_t **) CM_2dcalloc (MAX_FRAMES, n_state,
+                                             sizeof(vithist_t));
+
+  pscr_pid = (int32 *) CM_calloc (n_state, sizeof(int32));
+  s = 0;
+  for (i = 0; i < n_hyp_wid; i++) {
+    de = WordDict->dict_list[hyp_wid[i]];
+    for (j = 0; j < de->len; j++)
+      pscr_pid[s++] = de->ci_phone_ids[j];
+  }
+
+  pscr_tmat = (char **) CM_2dcalloc (n_state, n_state, sizeof(char));
+  for (i = 1; i < n_state; i++)
+    pscr_tmat[i-1][i] = 1;
+
+  /* Start search with silencephoneid; all others inactive */
+  for (i = 0; i < n_topsen_frm; i++) {
+    for (j = 0; j < n_state; j++) {
+      pscr_vithist[i][j].score = WORST_SCORE;
+      pscr_vithist[i][j].sf = 0;
+      pscr_vithist[i][j].pred = -1;
+    }
+  }
+  pscr_vithist[0][0].score = 0;
+
+  hyp = search_pscr_path (pscr_vithist,
+                          pscr_tmat,
+                          pscr_pid,
+                          n_state,
+                          1,
+                          PHONE_TRANS_PROB,
+                          n_state-1);
+
+  free (pscr_vithist);
+  free (pscr_pid);
+  free (pscr_tmat);
+
+  print_pscr_path (stdout, hyp, "FwdTree-PSCR");
+
+  return hyp;
+}
+
 void
 search_finish_fwd (void)
 {
@@ -2265,8 +2506,7 @@ search_finish_fwd (void)
     CHAN_T *hmm, /* *thmm,*/ **acl;
     /* int32 bp, bestbp, bestscore; */
     /* int32 l_scr; */
-    static void compute_phone_perplexity( void );
-    
+
     if ((CurrentFrame > 0) && (topsen_window > 1)) {
 	/* Wind up remaining frames */
 	for (i = 1; i < topsen_window; i++) {
@@ -2326,8 +2566,7 @@ search_finish_fwd (void)
     /* Get pscr-score for fwdtree recognition */
     {
 	search_hyp_t *pscrpath;
-	static search_hyp_t *fwdtree_pscr_path ( void );
-	
+
 	if (query_phone_conf ()) {
 	    pscrpath = fwdtree_pscr_path ();
 	    search_hyp_free (pscrpath);
@@ -4309,46 +4548,6 @@ search_fwdflat_init ( void )
 
 /* ------------------ CODE FOR TOP SENONES BASED SEARCH PRUNING ----------------- */
 
-#define DUMP_PHN_TOPSEN_SCR	0
-
-static void compute_phone_perplexity( void )
-{
-    int32 f, nf, p, sum, prob;
-    double pp, sumpp;	/* phone probs */
-    double logpp;	/* log phone probs */
-    double perp;	/* Perplexity */
-    register int32 ts = Table_Size;
-    register int16 *at = Addition_Table;
-    
-    nf = searchFrame();
-
-    for (f = 0; f < nf - topsen_window; f++) {
-	/* Find Sum(pscr[p]) over p */
-	sum = - (utt_pscr[f][0] << 4);
-	for (p = 1; p < NumCiPhones; p++) {
-	    prob = - (utt_pscr[f][p] << 4);
-	    FAST_ADD(sum, sum, prob, at, ts);
-	}
-	
-	perp = 0.0;
-	sumpp = 0.0;
-	for (p = 0; p < NumCiPhones; p++) {
-	    logpp = (utt_pscr[f][p] << 4);
-	    logpp = -logpp;
-	    logpp -= sum;
-	    logpp *= LOG_BASE;
-	    pp = exp(logpp);
-	    perp -= pp * logpp;
-
-	    sumpp += pp;
-	}
-	
-	phone_perplexity[f] = perp;
-    }
-    
-    for (; f <= nf; f++)
-	phone_perplexity[f] = 1.0;
-}
 
 
 static void topsen_init ( void )
@@ -4442,16 +4641,9 @@ uint16 **search_get_uttpscr ( void )
 }
 
 
-typedef struct {
-    int32 score;
-    int16 sf;
-    int16 pred;
-} vithist_t;
-
 
 /* Min frames for each phone in allphone decoding */
 #define MIN_ALLPHONE_SEG	3
-#define PHONE_TRANS_PROB	0.0001
 
 
 int32
@@ -4518,139 +4710,6 @@ static void vithist_dump (FILE *fp, vithist_t **vithist, int32 *pid, int32 nfr, 
 }
 #endif /* DUMP_VITHIST */
 
-/*
- * Search a given CI-phone state-graph using utt_pscr scores for the best path.
- * Called with a completely initialized vithist matrix; in particular the start state.
- * (Not the most efficient, but can be used to search arbitrary phone-state graphs!)
- */
-static search_hyp_t *
-search_pscr_path (vithist_t **vithist,	/* properly initialized */
-		  char **tmat,		/* State-adjacency matrix [from][to] */
-		  int32 *pid,		/* CI-phoneid[0..n_state] */
-		  int32 n_state,	/* #States in graph being searched */
-		  int32 minseg,		/* Min #frames per phone segment */
-		  double tprob,		/* State transition (exit) probability */
-		  int32 final_state)	/* Nominally, where search should exit */
-{
-    int32 i, j, f, tp, newscore, bestscore, bestp, pred_bestp, nseg;
-    search_hyp_t *head, *tmp;
-    
-    if (topsen_window <= 1) {
-	E_ERROR("Must use -topsen prediction to use this feature\n");
-	return NULL;
-    }
-    
-    tp = LOG(tprob);
-    
-    /* Search */
-    for (f = 0; f < n_topsen_frm; f++) {
-	/* Update path scores for current frame state scores */
-	for (i = 0; i < n_state; i++) {
-	    vithist[f][i].score -= (utt_pscr[f][pid[i]] << 4);
-	    
-	    /* Propagate to next frame */
-	    if (vithist[f][i].sf <= f-minseg) {
-		newscore = vithist[f][i].score + tp;
-		
-		for (j = 0; j < n_state; j++) {
-		    if ((i == j) || (! tmat[i][j]))
-			continue;
-		    
-		    if (vithist[f+1][j].score < newscore) {
-			vithist[f+1][j].score = newscore;
-			vithist[f+1][j].pred = i;
-			vithist[f+1][j].sf = f+1;
-		    }
-		}
-	    }
-	    if (vithist[f+1][i].score <= vithist[f][i].score) {
-		vithist[f+1][i].score = vithist[f][i].score;
-		vithist[f+1][i].pred = i;
-		vithist[f+1][i].sf = vithist[f][i].sf;
-	    }
-	}
-    }
-    
-    /* Find proper final state to use */
-    if (vithist[n_topsen_frm-1][final_state].pred < 0) {
-	E_ERROR("%s: search_pscr_path() didn't end in final state\n", uttproc_get_uttid());
-#ifdef DUMP_VITHIST
-	vithist_dump (stdout, vithist, pid, n_topsen_frm, n_state);
-#endif
-	
-	bestscore = (int32)0x80000000;
-	bestp = -1;
-	for (i = 0; i < n_state; i++) {
-	    if (vithist[n_topsen_frm-1][i].score > bestscore) {
-		bestscore = vithist[n_topsen_frm-1][i].score;
-		bestp = i;
-	    }
-	}
-	if ((bestp < 0) || (vithist[n_topsen_frm-1][bestp].score <= WORST_SCORE)) {
-	    E_ERROR("%s: search_pscr_path() failed\n", uttproc_get_uttid());
-	    return NULL;
-	}
-	final_state = bestp;
-    }
-    
-    /* Backtrace.  (Hack!! Misuse of search_hyp_t to store phones, rather than words) */
-    head = (search_hyp_t *) listelem_alloc (sizeof(search_hyp_t));
-    head->wid = pid[final_state];
-    head->ef = n_topsen_frm - 1;
-    head->next = NULL;
-    head->ascr = vithist[n_topsen_frm-1][final_state].score;	/* Fixed later */
-    nseg = 1;
-    
-    bestp = final_state;
-    for (f = n_topsen_frm-2; f >= 0; --f) {
-	pred_bestp = vithist[f+1][bestp].pred;
-	
-	if (pred_bestp != bestp) {
-	    head->sf = f+1;
-	    head->ascr -= (vithist[f][pred_bestp].score + tp);
-	    
-	    tmp = (search_hyp_t *) listelem_alloc (sizeof(search_hyp_t));
-	    tmp->wid = pid[pred_bestp];
-	    tmp->ef = f;
-	    tmp->next = head;
-	    head = tmp;
-	    head->ascr = vithist[f][pred_bestp].score;
-	    
-	    nseg++;
-	}
-	bestp = pred_bestp;
-    }
-    head->sf = 0;
-    
-    return head;
-}
-
-
-static void print_pscr_path (FILE *fp, search_hyp_t *hyp, char const *caption)
-{
-    search_hyp_t *h;
-    int32 pathscore, nf;
-    
-    if (! hyp) {
-	E_ERROR("%s(%s): none\n", caption, uttproc_get_uttid());
-	return;
-    }
-    
-    fprintf (fp, "%s(%s):\n", caption, uttproc_get_uttid());
-
-    pathscore = nf = 0;
-    for (h = hyp; h; h = h->next) {
-	fprintf (fp, "%5d %5d %10d %s\n", h->sf, h->ef, h->ascr, phone_from_id(h->wid));
-	pathscore += h->ascr;
-	nf = h->ef;
-    }
-    nf++;
-    
-    fprintf (fp, "Pathscore(%s (%s)): %d /frame: %d\n",
-	     caption, uttproc_get_uttid(), pathscore, (pathscore+(nf>>1))/nf);
-    fprintf (fp, "\n");
-    fflush (fp);
-}
 
 
 search_hyp_t *search_uttpscr2allphone ( void )
@@ -4700,63 +4759,6 @@ search_hyp_t *search_uttpscr2allphone ( void )
 }
 
 
-static search_hyp_t *fwdtree_pscr_path ( void )
-{
-    int32 n_state;
-    int32 i, j, s;
-    dict_entry_t *de;
-    vithist_t **pscr_vithist;
-    char **pscr_tmat;
-    int32 *pscr_pid;
-    search_hyp_t *hyp;
-    
-    n_state = 0;
-    for (i = 0; i < n_hyp_wid; i++) {
-	de = WordDict->dict_list[hyp_wid[i]];
-	n_state += de->len;
-    }
-    
-    pscr_vithist = (vithist_t **) CM_2dcalloc (MAX_FRAMES, n_state,
-					       sizeof(vithist_t));
-
-    pscr_pid = (int32 *) CM_calloc (n_state, sizeof(int32));
-    s = 0;
-    for (i = 0; i < n_hyp_wid; i++) {
-	de = WordDict->dict_list[hyp_wid[i]];
-	for (j = 0; j < de->len; j++)
-	    pscr_pid[s++] = de->ci_phone_ids[j];
-    }
-    
-    pscr_tmat = (char **) CM_2dcalloc (n_state, n_state, sizeof(char));
-    for (i = 1; i < n_state; i++)
-	pscr_tmat[i-1][i] = 1;
-    
-    /* Start search with silencephoneid; all others inactive */
-    for (i = 0; i < n_topsen_frm; i++) {
-	for (j = 0; j < n_state; j++) {
-	    pscr_vithist[i][j].score = WORST_SCORE;
-	    pscr_vithist[i][j].sf = 0;
-	    pscr_vithist[i][j].pred = -1;
-	}
-    }
-    pscr_vithist[0][0].score = 0;
-    
-    hyp = search_pscr_path (pscr_vithist,
-			    pscr_tmat,
-			    pscr_pid,
-			    n_state,
-			    1,
-			    PHONE_TRANS_PROB,
-			    n_state-1);
-    
-    free (pscr_vithist);
-    free (pscr_pid);
-    free (pscr_tmat);
-    
-    print_pscr_path (stdout, hyp, "FwdTree-PSCR");
-    
-    return hyp;
-}
 
 
 /*

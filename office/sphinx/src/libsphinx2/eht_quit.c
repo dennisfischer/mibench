@@ -78,6 +78,7 @@
 
 #include <stdio.h>
 #include <stdarg.h>
+#include <stdlib.h>
 
 void
 quit (int status, char const *fmt, ...)

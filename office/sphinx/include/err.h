@@ -13,7 +13,7 @@
  */
 
 #ifndef _LIBUTIL_ERR_H_
-#define _LIBUTIL_ERR_H
+#define _LIBUTIL_ERR_H_
 
 #include <stdarg.h>
 #include <errno.h>

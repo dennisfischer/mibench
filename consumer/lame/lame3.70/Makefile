@@ -78,7 +78,7 @@ ifeq ($(UNAME),Linux)
 
 
 # suggested for gcc-2.7.x
-   CC_OPTS =  -O3 -fomit-frame-pointer -funroll-loops -ffast-math  -finline-functions -Wall
+   CC_OPTS =  -O0 -g -fomit-frame-pointer -funroll-loops -ffast-math  -finline-functions -Wall
 #  CC_OPTS =  -O9 -fomit-frame-pointer -fno-strength-reduce -mpentiumpro -ffast-math -finline-functions -funroll-loops -Wall -malign-double -g -march=pentiumpro -mfancy-math-387 -pipe 
 
 #  for debugging:
