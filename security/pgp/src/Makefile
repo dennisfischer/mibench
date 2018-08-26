@@ -169,7 +169,7 @@ linux:
 
 linux-portable:
 	$(MAKE) all CC=gcc LD=gcc OBJS_EXT="" \
-	CFLAGS="$(RSAINCDIR) -std=c89 -O6 -g3 -DUNIX -DLINUX -DIDEA32 -DPORTABLE"
+	CFLAGS="$(RSAINCDIR) -std=c89 -O0 -g0 -DUNIX -DLINUX -DIDEA32 -DPORTABLE"
 
 arm-linux:
 	$(MAKE) all CC=arm-linux-gcc LD=arm-linux-gcc OBJS_EXT="" \
