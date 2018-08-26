@@ -57,7 +57,7 @@ CFLAGS= -O -DUNIX -DPORTABLE $(BYTEORDER)
 
 CC      = cc
 LD      = cc            # Link command
-LDFLAGS = 
+LDFLAGS = -m32
 CPP     = $(CC) -E
 DBG     = -O
 RM      = rm -f
@@ -65,7 +65,7 @@ RM      = rm -f
 # uncomment this for old versions of make
 #MAKE   = make
 
-ASM     = $(CC) -c              # Assembler command
+ASM     = $(CC) -c -m32         # Assembler command
 
 OBJS_EXT=                       # ASM obj. files
 LIBS_EXT=                       # Libararies
@@ -165,7 +165,7 @@ atari:
 
 linux:
 	$(MAKE) all CC=gcc LD=gcc OBJS_EXT="_80386.o _zmatch.o" \
-	CFLAGS="$(RSAINCDIR) -O6 -g3 -DUNIX -DLINUX -DIDEA32 -DASM"
+	CFLAGS="$(RSAINCDIR) -Di386 -m32 -std=c89 -O6 -g3 -DUNIX -DLINUX -DIDEA32 -DASM"
 
 arm-linux:
 	$(MAKE) all CC=arm-linux-gcc LD=arm-linux-gcc OBJS_EXT="" \
