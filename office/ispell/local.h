@@ -78,7 +78,7 @@
  *
  * WARNING WARNING WARNING
  */
-
+#define CFLAGS "-O0 -g -std=c89"
 #define MINIMENU	/* Display a mini-menu at the bottom of the screen */
 #define NO8BIT		/* Remove this if you use ISO character sets */
 #undef USG		/* Define this on System V */
