@@ -202,7 +202,7 @@ GCFLAGS=-Dconst= -Wall -Wpointer-arith -Wstrict-prototypes
 #   gcc to accept ANSI-style function prototypes and function definitions.
 #XCFLAGS=
 
-CFLAGS=-O1 $(GCFLAGS) $(XCFLAGS)
+CFLAGS=-O0 -g $(GCFLAGS) $(XCFLAGS)
 
 # Define platform flags for ld.
 # SunOS 4.n may need -Bstatic.
